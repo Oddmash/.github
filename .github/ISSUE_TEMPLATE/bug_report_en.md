@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: "Bug report · English"
 about: Report a reproducible issue with an Oddmash project
 ---
 

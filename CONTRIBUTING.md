@@ -1,5 +1,7 @@
 # Contributing to Oddmash
 
+**English** · [한국어](https://github.com/Oddmash/.github/blob/main/docs/ko/CONTRIBUTING.md) · [日本語](https://github.com/Oddmash/.github/blob/main/docs/ja/CONTRIBUTING.md) · [简体中文](https://github.com/Oddmash/.github/blob/main/docs/zh-CN/CONTRIBUTING.md)
+
 Thanks for helping us build better developer tools.
 
 ## Report a problem
