@@ -12,6 +12,13 @@ Open an issue in the relevant project. Describe what you expected, what happened
 
 Open an issue first for a new feature or a change that affects several parts of a project. For small fixes, open a pull request and explain the behavior it changes.
 
+## Project README standard
+
+- Use the README as the product introduction. Open with what the service does, who it helps, and one concrete use case.
+- Show the product in action with a screenshot, short recording, or demo. Add descriptive alt text. Label illustrations as previews and use sample data in visuals.
+- Put the quickest way to try the product after the introduction. Follow with implementation, development, and contribution details.
+- Keep the English, Korean, Japanese, and Simplified Chinese versions in sync, including language links and visuals.
+
 ## Submit a pull request
 
 - Keep changes focused and link the related issue when one exists.
