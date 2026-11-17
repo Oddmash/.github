@@ -16,11 +16,12 @@ Open an issue first for a new feature or a change that affects several parts of 
 
 - Use the README as the product introduction. Open with what the service does, who it helps, and one concrete use case.
 - Show the product in action with a screenshot, short recording, or demo. Add descriptive alt text. Label illustrations as previews and use sample data in visuals.
-- Put the quickest way to try the product after the introduction. Follow with implementation, development, and contribution details.
+- Keep repository setup, installation, local-run commands, implementation notes, build steps, tests, releases, and contributor workflows out of the README.
+- Put all development and verification instructions in the project's `CONTRIBUTING.md`. Link to it briefly from the README footer when useful.
 - Keep the English, Korean, Japanese, and Simplified Chinese versions in sync, including language links and visuals.
 
 ## Submit a pull request
 
 - Keep changes focused and link the related issue when one exists.
-- Follow the project README for setup and run its checks. Include the results in your pull request.
+- Follow the project's `CONTRIBUTING.md` for setup and checks. Include the results in your pull request.
 - Explain changes to permissions, captured data, or public APIs.

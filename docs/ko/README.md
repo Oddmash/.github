@@ -11,5 +11,6 @@
 ## 프로젝트
 
 - [Interaction Inspector](https://github.com/Oddmash/interaction-inspector/blob/main/docs/ko/README.md)는 DOM 이벤트, 키보드 포커스, 요소 상태를 검사하는 Chrome 확장 프로그램입니다.
+- [Oddmash UI](https://github.com/Oddmash/oddmash-ui/blob/main/docs/ko/README.md)는 Oddmash 제품이 함께 사용하는 React 컴포넌트와 디자인 토큰 기반입니다.
 
 버그나 개선 제안은 해당 프로젝트의 이슈 트래커에 남겨 주세요. [기여 가이드](CONTRIBUTING.md)
