@@ -1,0 +1,47 @@
+name: Reusable Node CI
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version used by the repository
+        required: false
+        type: string
+        default: '24'
+      working-directory:
+        description: Directory containing package.json and package-lock.json
+        required: false
+        type: string
+        default: '.'
+      ignore-install-scripts:
+        description: Install dependencies without running package lifecycle scripts
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Node quality checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+      - name: Install dependencies
+        if: ${{ !inputs.ignore-install-scripts }}
+        run: npm ci
+      - name: Install dependencies without lifecycle scripts
+        if: ${{ inputs.ignore-install-scripts }}
+        run: npm ci --ignore-scripts
+      - name: Run repository CI contract
+        run: npm run ci
