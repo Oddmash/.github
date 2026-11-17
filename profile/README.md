@@ -11,5 +11,6 @@ Building open-source tools for a better developer experience.
 ## Projects
 
 - [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) — a Chrome extension for inspecting DOM events, keyboard focus, and element state.
+- [Oddmash UI](https://github.com/Oddmash/oddmash-ui) — the shared React components and design-token foundation for Oddmash products.
 
 Report a bug or propose an improvement in the project’s issue tracker. [Contribution guide](https://github.com/Oddmash/.github/blob/main/CONTRIBUTING.md)
