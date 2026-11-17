@@ -20,6 +20,8 @@
 - 所有开发和验证说明都应放在项目的 `CONTRIBUTING.md` 中；需要时可在 README 页脚简短链接。
 - 同步更新英语、韩语、日语和简体中文版本的内容、语言链接及视觉素材。
 
+共用 Node CI 的使用方式请参阅[英文贡献指南](../../CONTRIBUTING.md#shared-node-checks)。
+
 ## 提交拉取请求
 
 - 控制变更范围，有相关 Issue 时请附上链接。
