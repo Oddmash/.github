@@ -20,6 +20,10 @@ Open an issue first for a new feature or a change that affects several parts of 
 - Put all development and verification instructions in the project's `CONTRIBUTING.md`. Link to it briefly from the README footer when useful.
 - Keep the English, Korean, Japanese, and Simplified Chinese versions in sync, including language links and visuals.
 
+## Shared Node checks
+
+Use `.github/workflows/node-ci.yml` for repositories whose checks run through `npm run ci` after `npm ci`. Call `Oddmash/.github/.github/workflows/node-ci.yml@<commit-sha>` from a job with `contents: read`. The caller owns its triggers. Set `working-directory` when the npm project is below the repository root and keep a committed lockfile there. `node-version` defaults to 24 and `ignore-install-scripts` defaults to false. Keep workflows with their own browser setup or compatibility matrix in the product repository.
+
 ## Submit a pull request
 
 - Keep changes focused and link the related issue when one exists.
