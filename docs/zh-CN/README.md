@@ -11,6 +11,7 @@ Oddmash 是一个由个人运营的独立软件工作室，开发和运营 Web �
 ## 项目
 
 - [Interaction Inspector](https://github.com/Oddmash/interaction-inspector/blob/main/docs/zh-CN/README.md) 是一款用于检查 DOM 事件、键盘焦点和元素状态的 Chrome 扩展。
+- [Vertactics](https://github.com/Oddmash/Vertactics) 是一款用于设计和分享回合制战斗地图的浏览器可视化编辑器。[在线体验](https://oddmash.github.io/Vertactics/)
 - [Oddmash UI](https://github.com/Oddmash/oddmash-ui/blob/main/docs/zh-CN/README.md) 是 Oddmash 产品共享的 React 组件与设计令牌基础。
 
 公开项目欢迎自发的外部贡献。Oddmash 不主动招募团队成员，也不以运营贡献者社区为前提；如希望参与，请在相应项目中提交具体问题或改进建议。[贡献指南](CONTRIBUTING.md)
