@@ -1,0 +1,33 @@
+# Oddmash organization working agreements
+
+Oddmash is a one-person independent software studio that builds web services, games, developer tools, and AI agents. Public projects may accept voluntary external contributions, but active recruitment and ongoing community operation are not default goals.
+
+Use this file as the baseline for new Oddmash repositories. Every product repository should keep its own root `AGENTS.md` and add only the rules its product, runtime, privacy boundary, release process, UI, or visual identity requires.
+
+## Product documentation
+
+- Treat every public README as a product introduction, not a repository setup guide. Explain what the product does, who it helps, and one concrete use case.
+- Show the real service, tool, or game with a screenshot, short recording, gameplay capture, or demo when one exists. Use descriptive alt text, label previews, and keep sensitive data out of visuals.
+- Keep installation, local development, architecture, testing, release, and contributor workflows in `CONTRIBUTING.md` or `docs/`.
+- Keep reader-facing README content in English, Korean, Japanese, and Simplified Chinese unless a repository documents a narrower approved scope. Synchronize claims, language links, and visuals.
+
+## Engineering baseline
+
+- Keep changes focused, reversible, and covered by the checks appropriate to the affected product.
+- Use the package manager, lockfile, runtime, engine, and generated-file boundaries declared by the repository. Do not introduce a shared stack merely for organizational consistency.
+- Give CI and deployment workflows the minimum permissions they need. Pin reusable cross-repository workflows to a reviewed commit.
+- Keep secrets, signing material, private user data, and production-only values out of source, fixtures, logs, screenshots, prompts, and review comments.
+- Preserve existing URLs, release channels, package names, permissions, privacy boundaries, and deployment behavior unless the task explicitly authorizes a migration.
+
+## UI and design
+
+- Accessibility, keyboard operation, reduced motion, responsive behavior, and clear state feedback are product requirements where applicable.
+- Keep product-specific layout, visual tokens, interaction patterns, and game presentation in the product repository.
+- Reuse Oddmash UI only when it fits the product and runtime. Promote a token or component into a shared package only after more than one product needs the same stable behavior.
+
+## Collaboration and AI review
+
+- External contributions are optional and scoped. A contribution does not imply recruitment, roadmap ownership, or an ongoing maintainer role.
+- Follow the repository's `CONTRIBUTING.md`, issue templates, and pull request template. Record verification evidence and disclose permissions, data, deployment, release, and public API changes.
+- AI-assisted review is advisory and least-privileged. It may read pull request diffs and checks and leave comments, but it must not approve, merge, publish, rotate secrets, or make production changes automatically.
+- Review actual behavior and repository rules before style preferences. Avoid duplicate comments, include evidence and confidence, and let maintainers dismiss findings.
