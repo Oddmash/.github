@@ -6,15 +6,17 @@ Oddmash plans to use one review service across selected organization and persona
 
 - Install a GitHub App only on selected repositories.
 - Grant read access to repository metadata, pull requests, contents, and checks, plus write access to pull request review comments.
-- Read the changed files, relevant root and nested `AGENTS.md` files, the pull request description, and completed check results.
-- Report only high-confidence correctness, security, privacy, accessibility, performance, and release risks. Include file evidence, severity, confidence, and a concrete verification step.
+- Read the changed files, relevant root and nested `AGENTS.md` files, repository-specific review rules, the pull request description, and completed check results.
+- Combine deterministic evidence from ESLint or the repository's equivalent linter, the implementation language's compiler or static checks, and test results with AI analysis. Reference existing failures instead of repeating their output.
+- Prioritize actual bugs, security and privacy defects, performance regressions, and accessibility problems over style preferences. Review visual and interaction changes against the repository's design documents rather than a generic Oddmash aesthetic.
+- Include file evidence, severity, confidence, and a concrete verification step for every finding. Avoid duplicate comments across reruns and overlapping tools.
 - Do not approve, request changes as a blocking gate, modify branches, expose secrets, publish artifacts, merge, or deploy.
 
 Start with a low-risk public repository and run in report-only mode before posting comments. Compare findings with maintainer review, track false positives, redact sensitive content, and cap diff size and model spend.
 
 ## Phase 2: repository policies
 
-- Let each repository define review focus and exclusions in `AGENTS.md` without copying product-specific rules into the organization baseline.
+- Let each repository define review focus and exclusions in `AGENTS.md` without copying product-specific rules into the organization baseline. Nested `AGENTS.md` files override broader guidance for their scope.
 - Combine deterministic CI results with AI analysis. The bot should reference failing checks instead of rephrasing them.
 - Deduplicate findings by repository, pull request, commit, file, line, and rule. Update or resolve its own stale comments when the code changes.
 - Keep review logs minimal, define retention, and never store source or prompts longer than required to complete and audit the review.
