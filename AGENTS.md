@@ -42,4 +42,3 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 - Use a reviewed immutable commit and exact skill path for agent dependencies. Record the revision and relevant verification evidence in the consuming agent repository. Upgrade references through a reviewed PR; preserve the last known working revision for rollback.
 - Keep skill installation and agent deployment independent. A skill update must not automatically change a deployed agent's behavior or expand permissions. Missing or inaccessible guidance must not be treated as permission to act.
 - Do not publish private repository content or internal operational details in public documentation, prompts, or reviews. Apply the existing AI review policy to all automated review actions.
-
