@@ -1,6 +1,6 @@
 # AI code review plan
 
-Oddmash plans to use one review service across selected organization and personal repositories without requiring repositories to move owners. Adoption is opt-in and starts with the smallest useful permission set.
+Oddmash uses a maintainer-enabled central review service for public organization repositories. Private, internal, and personal repositories remain excluded unless separately approved. The service uses the smallest useful permission set.
 
 ## Phase 1: advisory pilot
 
