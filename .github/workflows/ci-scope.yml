@@ -70,7 +70,8 @@ jobs:
           const runtime = !['meta', 'planning'].includes(profile) && (full || product.length > 0);
           const only = prefix => product.length > 0 && product.every(p => p.startsWith(prefix));
           const core = runtime && (profile !== 'kowrap' || full || product.some(p => !p.startsWith('site/') && !p.startsWith('docs/guide/') && p !== 'test/site.mjs'));
-          const site = runtime && (profile === 'kowrap' || profile === 'vertactics' || profile === 'ui');
+          const deploymentPath = p => !p.startsWith('.github/') && !p.startsWith('scripts/audit-') && !p.startsWith('scripts/check-') && !p.startsWith('scripts/inspect-') && !/(?:^|\/)(?:tests?|playwright[^/]*)(?:\/|$|\.)/.test(p);
+          const site = runtime && (profile === 'kowrap' || profile === 'ui' || (profile === 'vertactics' && (!base || product.some(deploymentPath))));
           const editor = runtime && (profile !== 'vertactics' || full || !only('apps/landing/'));
           const web = runtime && (profile !== 'game' || full || !only('apps/game/'));
           const game = runtime && (profile !== 'game' || full || product.some(p => !p.startsWith('apps/client/') && p !== 'index.html' && !p.startsWith('public/')));
