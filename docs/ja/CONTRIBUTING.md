@@ -26,6 +26,8 @@ Oddmash は一人で運営する独立系ソフトウェアスタジオです。
 
 共通 Node CI の利用方法は[英語版のガイド](../../CONTRIBUTING.md#shared-node-checks)を参照してください。
 
+JavaScript/TypeScript リポジトリ内部では、`package.json` に固定した共通 pnpm バージョンと `pnpm-lock.yaml` を使用します。CI では `pnpm install --frozen-lockfile` でインストールします。npm レジストリへの公開と外部利用者向け npm、Yarn、Bun のインストール手順は維持します。
+
 ## 共通の開発基準
 
 - リポジトリ固有の作業ルールはルートの `AGENTS.md` に置きます。[組織共通の基準](../../AGENTS.md)から始め、プロダクト、プライバシー、リリース、エンジン、UI、デザインに実際に必要な規則だけを追加します。

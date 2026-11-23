@@ -28,7 +28,7 @@ Open an issue first for a new feature or a change that affects several parts of 
 
 ## Shared Node checks
 
-Use `.github/workflows/node-ci.yml` for repositories whose checks run through `npm run ci` after `npm ci`. Call `Oddmash/.github/.github/workflows/node-ci.yml@<commit-sha>` from a job with `contents: read`. The caller owns its triggers. Set `working-directory` when the npm project is below the repository root and keep a committed lockfile there. `node-version` defaults to 24 and `ignore-install-scripts` defaults to false. Keep workflows with their own browser setup or compatibility matrix in the product repository.
+Use `.github/workflows/node-ci.yml` for repositories whose checks run through `pnpm run ci` after `pnpm install --frozen-lockfile`. Call `Oddmash/.github/.github/workflows/node-ci.yml@<commit-sha>` from a job with `contents: read`. The caller owns its triggers. Set `working-directory` when the independent pnpm project is below the repository root and commit its `package.json` with the shared `packageManager` pin and `pnpm-lock.yaml` there. `node-version` defaults to 24 and `ignore-install-scripts` defaults to false. Keep workflows with their own browser setup or compatibility matrix in the product repository. Existing pinned callers must migrate through separate reviewed PRs; consumer installation and npm registry publication are not affected.
 
 ## Shared development baseline
 
