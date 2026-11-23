@@ -27,6 +27,8 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 ## Collaboration and AI review
 
+- Use English for issue and pull request titles, bodies, public review discussions, contribution templates, commit messages, and changelog entries in all public repositories. Product READMEs and user-facing documentation retain their existing localization policies. Provide translation help when needed; do not rewrite historical contributions.
+
 - External contributions are optional and scoped. A contribution does not imply recruitment, roadmap ownership, or an ongoing maintainer role.
 - Follow the repository's `CONTRIBUTING.md`, issue templates, and pull request template. Record verification evidence and disclose permissions, data, deployment, release, and public API changes.
 - AI-assisted review is advisory and least-privileged. It may read pull request diffs and checks and leave comments, but it must not approve, merge, publish, rotate secrets, or make production changes automatically.

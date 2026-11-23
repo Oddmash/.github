@@ -6,6 +6,10 @@ Thanks for helping improve an Oddmash project.
 
 Oddmash is a one-person independent software studio. Public repositories welcome focused, voluntary contributions, but there is no standing recruitment program or expectation that contributors join a long-term community. Maintainer priorities and each project's published scope determine what can be accepted.
 
+## Contribution language
+
+Use English for issue and pull request titles, bodies, public review discussions, contribution templates, commit messages, and changelog entries in all public repositories. Product READMEs and user-facing documentation retain their existing localization policies. Provide translation help when needed; do not rewrite historical contributions.
+
 ## Report a problem
 
 Open an issue in the relevant project. Describe what you expected, what happened, and how to reproduce it. Include the project version and relevant environment details. Use public or local fixtures with synthetic values. Remove credentials, private page contents, and personal data from logs and screenshots.

@@ -1,4 +1,4 @@
-**English** · [한국어](https://github.com/Oddmash/.github/blob/main/docs/ko/PULL_REQUEST_TEMPLATE.md) · [日本語](https://github.com/Oddmash/.github/blob/main/docs/ja/PULL_REQUEST_TEMPLATE.md) · [简体中文](https://github.com/Oddmash/.github/blob/main/docs/zh-CN/PULL_REQUEST_TEMPLATE.md)
+Write the title and description in English. Link the related issue when applicable.
 
 ## Summary
 
