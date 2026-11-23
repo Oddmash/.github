@@ -21,9 +21,10 @@ Start with a low-risk public repository and run in report-only mode before posti
 - Deduplicate findings by repository, pull request, commit, file, line, and rule. Update or resolve its own stale comments when the code changes.
 - Keep review logs minimal, define retention, and never store source or prompts longer than required to complete and audit the review.
 
-## Phase 3: broader opt-in
+## Phase 3: organization-wide public repository rollout
 
-- Expand to private or personal repositories only after installation scope, billing ownership, data handling, and incident response are documented.
+- The maintainer may enable a central GitHub App webhook for public Oddmash repositories, including future public repositories, without a per-repository review workflow. Validate the organization, installation and public repository at runtime; do not execute contributed code.
+- Private and internal repositories remain outside the central reviewer. Expansion to them or personal repositories requires separate explicit approval and data-handling review.
 - Keep organization and personal installations separate so a repository transfer is not required for review coverage.
 - Add a non-blocking status check only after the pilot demonstrates stable precision. For a maintainer-enabled independent App, approval requires zero validated findings, no omitted files, and passing current checks. Request changes only for high-confidence actionable findings; incomplete evidence requires a comment and maintainer review. Automated merge, release, and secret access remain out of scope.
 
