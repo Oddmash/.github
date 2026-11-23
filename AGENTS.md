@@ -19,6 +19,14 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 - Keep secrets, signing material, private user data, and production-only values out of source, fixtures, logs, screenshots, prompts, and review comments.
 - Preserve existing URLs, release channels, package names, permissions, privacy boundaries, and deployment behavior unless the task explicitly authorizes a migration.
 
+## Git and repository workflow
+
+- Verify repository identity, remote, base revision, branch and existing changes before editing. Preserve user work and contributor authorship. Use focused branches and follow local naming conventions; absent one, prefer `feat/`, `fix/`, `docs/`, `refactor/`, `test/` or `chore/` with a descriptive slug.
+- Keep commits small and coherent, with concise English subjects for public repositories. Stage only intended changes; inspect diffs and exclude secrets, unrelated files and unnecessary generated artifacts.
+- Link relevant issues according to the repository workflow. Use PR templates, describe scope, actual verification, compatibility and release impact; mark incomplete work as draft. Follow current exact-head CI and review requirements before an authorized merge.
+- Keep protected branches protected. Never force-push shared branches, bypass checks, rewrite contributor history or discard unrelated work without explicit maintainer authorization. Prefer corrective commits or revert PRs for shared history. Follow the merge rules under Collaboration and AI review.
+- Tag and publish from the approved revision under the product's release policy; verify the published artifact. Use the reusable Git workflow skill in the skills catalog for execution guidance when available.
+
 ## UI and design
 
 - Accessibility, keyboard operation, reduced motion, responsive behavior, and clear state feedback are product requirements where applicable.
