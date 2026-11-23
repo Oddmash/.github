@@ -2,9 +2,9 @@
 
 Oddmash uses a maintainer-enabled central review service for public organization repositories. Private, internal, and personal repositories remain excluded unless separately approved. The service uses the smallest useful permission set.
 
-## Phase 1: advisory pilot
+## Phase 1: completed advisory pilot (historical)
 
-- Install a GitHub App only on selected repositories.
+- The initial pilot installed a GitHub App only on selected repositories. This was a pilot-only restriction, superseded by the maintainer-approved public organization rollout in Phase 3.
 - Grant read access to repository metadata, pull requests, contents, and checks, plus write access to pull request review comments.
 - Read the changed files, relevant root and nested `AGENTS.md` files, repository-specific review rules, the pull request description, and completed check results.
 - Combine deterministic evidence from ESLint or the repository's equivalent linter, the implementation language's compiler or static checks, and test results with AI analysis. Reference existing failures instead of repeating their output.
@@ -23,7 +23,7 @@ Start with a low-risk public repository and run in report-only mode before posti
 
 ## Phase 3: organization-wide public repository rollout
 
-- The maintainer may enable a central GitHub App webhook for public Oddmash repositories, including future public repositories, without a per-repository review workflow. Validate the organization, installation and public repository at runtime; do not execute contributed code.
+- The maintainer has enabled organization-wide installation and explicitly authorized automatic enrollment of current and future public Oddmash repositories, without requiring a separate review workflow in each repository. Validate the organization, installation and public repository at runtime; do not execute contributed code.
 - Private and internal repositories remain outside the central reviewer. Expansion to them or personal repositories requires separate explicit approval and data-handling review.
 - Keep organization and personal installations separate so a repository transfer is not required for review coverage.
 - Add a non-blocking status check only after the pilot demonstrates stable precision. For a maintainer-enabled independent App, approval requires zero validated findings, no omitted files, and passing current checks. Request changes only for high-confidence actionable findings; incomplete evidence requires a comment and maintainer review. Automated merge, release, and secret access remain out of scope.
