@@ -6,6 +6,9 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 ## Product documentation
 
+- Write direct, natural prose in new product copy, documentation, and collaboration messages. Do not use em dashes (U+2014), en dashes (U+2013) as sentence punctuation, or decorative punctuation as a substitute for clear sentences. Prefer periods, commas, colons, or parentheses. Preserve required code, identifiers, quotations, and literal source content. Avoid generic slogans, inflated claims, repeated rhetorical headlines, and filler.
+- A public product website must explain the primary use case and provide the actionable usage documentation on the site itself, including relevant installation, examples, configuration, troubleshooting and limitations. GitHub links supplement source and contribution workflows; they must not replace the website's primary learning path.
+
 - Treat every public README as a product introduction, not a repository setup guide. Explain what the product does, who it helps, and one concrete use case.
 - Show the real service, tool, or game with a screenshot, short recording, gameplay capture, or demo when one exists. Use descriptive alt text, label previews, and keep sensitive data out of visuals.
 - Keep installation, local development, architecture, testing, release, and contributor workflows in `CONTRIBUTING.md` or `docs/`.
