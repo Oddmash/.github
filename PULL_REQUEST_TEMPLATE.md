@@ -1,5 +1,7 @@
 Write the title and description in English. Link the related issue when applicable.
 
+Open as ready for review by default. If a draft is necessary, explain why and what must change before marking it ready. Pending remote CI or review alone is not a draft reason.
+
 ## Summary
 
 - What changed and why?

@@ -40,6 +40,7 @@ Use `.github/workflows/node-ci.yml` for repositories whose checks run through `n
 
 ## Submit a pull request
 
+- Open PRs as ready for review by default, even while remote CI or review is pending. Reserve drafts for an explicit request, materially incomplete implementation, or missing essential evidence that makes review misleading; state the reason and mark ready when resolved.
 - Keep changes focused and link the related issue when one exists.
 - Follow the project's `CONTRIBUTING.md` for setup and checks. Include the results in your pull request.
 - Explain changes to permissions, captured data, public APIs, deployment, or release behavior.
