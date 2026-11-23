@@ -1,6 +1,6 @@
 # AI code review plan
 
-Oddmash uses a maintainer-enabled central review service for public organization repositories. Private, internal, and personal repositories remain excluded unless separately approved. The service uses the smallest useful permission set.
+Oddmash uses a maintainer-enabled central review service for public organization repositories and explicitly approved private organization repositories. Internal and personal repositories remain excluded. The service uses the smallest useful permission set.
 
 ## Phase 1: completed advisory pilot (historical)
 
@@ -21,9 +21,9 @@ Start with a low-risk public repository and run in report-only mode before posti
 - Deduplicate findings by repository, pull request, commit, file, line, and rule. Update or resolve its own stale comments when the code changes.
 - Keep review logs minimal, define retention, and never store source or prompts longer than required to complete and audit the review.
 
-## Phase 3: organization-wide public repository rollout
+## Phase 3: organization-wide review rollout
 
-- The maintainer has enabled organization-wide installation and explicitly authorized automatic enrollment of current and future public Oddmash repositories, without requiring a separate review workflow in each repository. Validate the organization, installation and public repository at runtime; do not execute contributed code.
+- The maintainer has enabled organization-wide installation and explicitly authorized automatic enrollment of current and future public Oddmash repositories, without requiring a separate review workflow in each repository. Validate the organization, installation, repository identity and permitted visibility at runtime; do not execute contributed code.
 - Private repositories may use the central reviewer only under a separately approved repository identity allowlist and data-processing policy. New private repositories are not enrolled automatically. Internal and personal repositories remain excluded. Private auto-merge is prohibited.
 - Keep organization and personal installations separate so a repository transfer is not required for review coverage.
 - Add a non-blocking status check only after the pilot demonstrates stable precision. For a maintainer-enabled independent App, approval requires zero validated findings, no omitted files, and passing current checks. Request changes only for high-confidence actionable findings; incomplete evidence requires a comment and maintainer review. Automatic release and secret access remain out of scope. The advisory reviewer does not merge.
