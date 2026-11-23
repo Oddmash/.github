@@ -26,6 +26,13 @@ Start with a low-risk public repository and run in report-only mode before posti
 - The maintainer has enabled organization-wide installation and explicitly authorized automatic enrollment of current and future public Oddmash repositories, without requiring a separate review workflow in each repository. Validate the organization, installation and public repository at runtime; do not execute contributed code.
 - Private and internal repositories remain outside the central reviewer. Expansion to them or personal repositories requires separate explicit approval and data-handling review.
 - Keep organization and personal installations separate so a repository transfer is not required for review coverage.
-- Add a non-blocking status check only after the pilot demonstrates stable precision. For a maintainer-enabled independent App, approval requires zero validated findings, no omitted files, and passing current checks. Request changes only for high-confidence actionable findings; incomplete evidence requires a comment and maintainer review. Automated merge, release, and secret access remain out of scope.
+- Add a non-blocking status check only after the pilot demonstrates stable precision. For a maintainer-enabled independent App, approval requires zero validated findings, no omitted files, and passing current checks. Request changes only for high-confidence actionable findings; incomplete evidence requires a comment and maintainer review. Automatic release and secret access remain out of scope. The advisory reviewer does not merge.
 
 Success means fewer escaped defects without adding noisy review work. Track accepted findings, dismissed findings, duplicate rate, review latency, cost per pull request, and any permission or data-handling incident.
+
+## Phase 4: maintainer-only auto-merge pilot
+
+- The same GitHub App uses a separate deterministic merge policy. It is limited to maintainer-authored, same-repository PRs into protected main in Kowrap, Oddmash UI, Interaction Inspector, and Vertactics. New repositories, private repositories, external contributors, and organization-policy changes remain manual.
+- Require a single linked maintainer-authored open issue with explicit acceptance criteria, validated evidence for every criterion and the full issue scope, zero review findings, exact-head App approval, and all current checks passing. Missing or ambiguous evidence leaves the PR open.
+- Initially limit automatic merging to ordinary Markdown documentation and newly added tests. Source, existing tests, configuration, release, sensitive paths and policy changes require manual review.
+- Enforce GitHub Actions verify on main, require an up-to-date branch, never bypass branch protection, and scope the short-lived write token to the eligible repository only. Use the verified head SHA for squash merge. Keep a deployment kill switch; failure leaves the PR open.
