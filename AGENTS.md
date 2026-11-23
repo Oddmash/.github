@@ -14,6 +14,8 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 - Keep installation, local development, architecture, testing, release, and contributor workflows in `CONTRIBUTING.md` or `docs/`.
 - Keep reader-facing README content in English, Korean, Japanese, and Simplified Chinese unless a repository documents a narrower approved scope. Synchronize claims, language links, and visuals.
 
+- For public libraries, SDKs, APIs and developer tools, generate an agent-readable `llms.txt` index and relevant clean Markdown/API artifacts from the same public, versioned sources as human documentation. Verify built URLs, content parity, runnable examples and privacy boundaries. Do not use an AI index as a substitute for usable human docs or an access control.
+
 ## Engineering baseline
 
 - Name new source files, folders, assets, documentation files and internal route segments in lowercase kebab-case (`user-profile.tsx`, `use-user-profile.ts`, `user-profile.test.ts`, `user-profile.module.scss`). Preserve framework/tool-required names and syntax (`AGENTS.md`, `SKILL.md`, `README.md`, `package.json`, `page.tsx`, `[id]`), existing public API/import paths, external assets and generated files. For a rename, update references, imports, tests and links together; verify case-sensitive resolution and avoid unrelated mass renames.
@@ -39,6 +41,7 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 - Design each public landing and documentation site around its actual audience, principal task and product identity. A library should prioritize working examples and clear native documentation; a product should communicate its real workflow and value; a game should convey actual gameplay and atmosphere. Do not impose one organization-wide visual template. Require actual product evidence, readable copy, responsive renders and a verified first-use path before handoff.
 
+- Use Kowrap on eligible Korean prose when compatible with the actual framework and layout. Verify natural line breaks, fallback, semantics and rendering; reproduce and fix confirmed library defects through a separate authorized upstream issue, regression test and reviewed release rather than hiding them with hardcoded breaks.
 - Accessibility, keyboard operation, reduced motion, responsive behavior, and clear state feedback are product requirements where applicable.
 - Keep product-specific layout, visual tokens, interaction patterns, and game presentation in the product repository.
 - Reuse Oddmash UI only when it fits the product and runtime. Promote a token or component into a shared package only after more than one product needs the same stable behavior.
