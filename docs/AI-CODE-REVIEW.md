@@ -10,7 +10,7 @@ Oddmash plans to use one review service across selected organization and persona
 - Combine deterministic evidence from ESLint or the repository's equivalent linter, the implementation language's compiler or static checks, and test results with AI analysis. Reference existing failures instead of repeating their output.
 - Prioritize actual bugs, security and privacy defects, performance regressions, and accessibility problems over style preferences. Review visual and interaction changes against the repository's design documents rather than a generic Oddmash aesthetic.
 - Include file evidence, severity, confidence, and a concrete verification step for every finding. Avoid duplicate comments across reruns and overlapping tools.
-- Do not approve, request changes as a blocking gate, modify branches, expose secrets, publish artifacts, merge, or deploy.
+- Do not approve or request changes in the report-only pilot. Never modify branches, expose secrets, publish artifacts, merge, or deploy.
 
 Start with a low-risk public repository and run in report-only mode before posting comments. Compare findings with maintainer review, track false positives, redact sensitive content, and cap diff size and model spend.
 
@@ -25,6 +25,6 @@ Start with a low-risk public repository and run in report-only mode before posti
 
 - Expand to private or personal repositories only after installation scope, billing ownership, data handling, and incident response are documented.
 - Keep organization and personal installations separate so a repository transfer is not required for review coverage.
-- Add a non-blocking status check only after the pilot demonstrates stable precision. Automated approval, merge, release, and secret access remain out of scope.
+- Add a non-blocking status check only after the pilot demonstrates stable precision. For a maintainer-enabled independent App, approval requires zero validated findings, no omitted files, and passing current checks. Request changes only for high-confidence actionable findings; incomplete evidence requires a comment and maintainer review. Automated merge, release, and secret access remain out of scope.
 
 Success means fewer escaped defects without adding noisy review work. Track accepted findings, dismissed findings, duplicate rate, review latency, cost per pull request, and any permission or data-handling incident.

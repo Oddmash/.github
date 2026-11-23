@@ -31,6 +31,6 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 - External contributions are optional and scoped. A contribution does not imply recruitment, roadmap ownership, or an ongoing maintainer role.
 - Follow the repository's `CONTRIBUTING.md`, issue templates, and pull request template. Record verification evidence and disclose permissions, data, deployment, release, and public API changes.
-- AI-assisted review is advisory and least-privileged. It may read pull request diffs and checks and leave comments, but it must not approve, merge, publish, rotate secrets, or make production changes automatically.
+- AI-assisted review defaults to advisory and least-privileged. A maintainer-enabled, independently identified GitHub App may approve fully reviewed PRs with passing current checks or request changes for high-confidence actionable findings. Incomplete evidence requires a comment and human review. The agent must never merge, publish, rotate secrets, execute contributed code, or make production changes automatically.
 - Combine the repository's linter, implementation-language checks, and test results with AI analysis. Review actual bugs, performance, accessibility, security, and privacy before style preferences.
 - Review design changes against the product's own design documents. Avoid duplicate comments, include severity, evidence and confidence, and let maintainers dismiss findings.
