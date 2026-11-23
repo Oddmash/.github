@@ -30,9 +30,9 @@ Start with a low-risk public repository and run in report-only mode before posti
 
 Success means fewer escaped defects without adding noisy review work. Track accepted findings, dismissed findings, duplicate rate, review latency, cost per pull request, and any permission or data-handling incident.
 
-## Phase 4: maintainer-only auto-merge pilot
+## Phase 4: maintainer-only auto-merge
 
 - The same GitHub App uses a separate deterministic merge policy. It is limited to maintainer-authored, same-repository PRs into protected main in Kowrap, Oddmash UI, Interaction Inspector, and Vertactics. New repositories, private repositories, external contributors, and organization-policy changes remain manual.
 - Require a single linked maintainer-authored open issue with explicit acceptance criteria, validated evidence for every criterion and the full issue scope, zero review findings, exact-head App approval, and all current checks passing. Missing or ambiguous evidence leaves the PR open.
-- Initially limit automatic merging to ordinary Markdown documentation only. All test and source code, architecture, configuration, release, sensitive paths and policy changes require manual review.
-- Enforce GitHub Actions verify on main, require an up-to-date branch, never bypass branch protection, and scope the short-lived write token to the eligible repository only. Use the verified head SHA for squash merge. Keep a deployment kill switch; failure leaves the PR open.
+- Eligible changes include ordinary Markdown documentation, allowlisted product source paths, and additive tests that do not remove assertions or disable tests. Architecture, configuration, generated code, permissions, releases, sensitive paths, test rewrites and policy changes require manual review.
+- Enforce GitHub Actions verify on main, require an up-to-date branch, never bypass branch protection, and scope the short-lived write token to the eligible repository only. Use the verified head SHA for a normal merge commit. Do not squash or rebase. Keep a deployment kill switch; failure leaves the PR open.
