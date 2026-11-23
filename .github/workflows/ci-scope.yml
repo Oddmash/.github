@@ -1,0 +1,84 @@
+name: Change-aware CI scope
+on:
+  workflow_call:
+    inputs:
+      profile:
+        type: string
+        required: true
+    outputs:
+      runtime:
+        value: ${{ jobs.scope.outputs.runtime }}
+      core:
+        value: ${{ jobs.scope.outputs.core }}
+      site:
+        value: ${{ jobs.scope.outputs.site }}
+      editor:
+        value: ${{ jobs.scope.outputs.editor }}
+      web:
+        value: ${{ jobs.scope.outputs.web }}
+      game:
+        value: ${{ jobs.scope.outputs.game }}
+      react18:
+        value: ${{ jobs.scope.outputs.react18 }}
+      workflow:
+        value: ${{ jobs.scope.outputs.workflow }}
+permissions:
+  contents: read
+jobs:
+  scope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      runtime: ${{ steps.scope.outputs.runtime }}
+      core: ${{ steps.scope.outputs.core }}
+      site: ${{ steps.scope.outputs.site }}
+      editor: ${{ steps.scope.outputs.editor }}
+      web: ${{ steps.scope.outputs.web }}
+      game: ${{ steps.scope.outputs.game }}
+      react18: ${{ steps.scope.outputs.react18 }}
+      workflow: ${{ steps.scope.outputs.workflow }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Classify changed paths
+        id: scope
+        env:
+          PROFILE: ${{ inputs.profile }}
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const fs = require('node:fs');
+          const profile = process.env.PROFILE;
+          const allowed = ['meta', 'planning', 'extension', 'ui', 'vertactics', 'game', 'kowrap', 'skills', 'agents'];
+          if (!allowed.includes(profile)) throw Error('Unknown CI profile');
+          const git = (...args) => execFileSync('git', args, { encoding: 'utf8' });
+          let base = '';
+          if (process.env.EVENT === 'pull_request') base = git('rev-parse', 'HEAD^1').trim();
+          else if (process.env.EVENT === 'push' && /^[a-f0-9]{40}$/i.test(process.env.BEFORE || '') && !/^0+$/.test(process.env.BEFORE)) {
+            try { git('cat-file', '-e', process.env.BEFORE + '^{commit}'); base = process.env.BEFORE; } catch {}
+          }
+          if (base) git('diff', '--check', base, 'HEAD');
+          const paths = base ? git('diff', '--no-renames', '--name-only', '-z', base, 'HEAD').split('\0').filter(Boolean) : [];
+          const metadata = p => /^(?:\.github\/(?:CODEOWNERS|ISSUE_TEMPLATE\/|pull_request_template\.md|PULL_REQUEST_TEMPLATE\.md|workflows\/oddmash-(?:pr-labels|review-relay)\.yml)|\.agents\/skills\/.*\.md$)/i.test(p);
+          const doc = p => (!p.includes('/') && /\.md$/i.test(p)) || p.startsWith('docs/') || (profile === 'vertactics' && p.startsWith('skills/'));
+          const product = paths.filter(p => !metadata(p) && (!doc(p) || (profile === 'kowrap' && p.startsWith('docs/guide/'))));
+          const full = !base || paths.some(p => /^\.github\/workflows\/ci\.yml$/.test(p));
+          const runtime = !['meta', 'planning'].includes(profile) && (full || product.length > 0);
+          const only = prefix => product.length > 0 && product.every(p => p.startsWith(prefix));
+          const core = runtime && (profile !== 'kowrap' || full || product.some(p => !p.startsWith('site/') && !p.startsWith('docs/guide/') && p !== 'test/site.mjs'));
+          const site = runtime && (profile === 'kowrap' || profile === 'vertactics' || profile === 'ui');
+          const editor = runtime && (profile !== 'vertactics' || full || !only('apps/landing/'));
+          const web = runtime && (profile !== 'game' || full || !only('apps/game/'));
+          const game = runtime && (profile !== 'game' || full || product.some(p => !p.startsWith('apps/client/') && p !== 'index.html' && !p.startsWith('public/')));
+          const react18 = runtime && (profile !== 'ui' || full || !only('demo/'));
+          const workflow = !base || paths.some(p => p.startsWith('.github/workflows/') || p.startsWith('.github/actions/'));
+          for (const [key, value] of Object.entries({ runtime, core, site, editor, web, game, react18, workflow })) fs.appendFileSync(process.env.GITHUB_OUTPUT, key + '=' + value + '\n');
+          console.log(JSON.stringify({ profile, changed: paths.length, runtime, core, site, editor, web, game, react18, workflow }));
+          NODE
+      - name: Validate workflow syntax
+        if: steps.scope.outputs.workflow == 'true'
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -shellcheck= -pyflakes=

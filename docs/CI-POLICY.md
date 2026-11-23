@@ -1,0 +1,5 @@
+# Change-aware CI
+
+Keep a stable CI workflow and final `verify` job for every PR. Classify the actual merge diff (or the complete main-push diff); fail closed if history cannot be resolved and run the full profile. Documentation and repository metadata receive whitespace validation and workflow changes receive actionlint validation. Runtime jobs run only for affected profiles; unknown product paths run the conservative full profile. Manual dispatch always runs the full profile. Preserve release and deployment workflows and their permissions. Do not use top-level path filters on required PR checks. Review changes to shared routing with fixtures and pin consumers to a reviewed commit.
+
+Profiles: extension (build, privacy and browser smoke); UI (React 19, plus React 18 compatibility for shared components); Vertactics (application, editor compatibility and conditional Pages); game (web/server and Godot); Kowrap (core/framework/browser and docs site); skills (manifest and installer tests); agents (offline tests); meta/planning (documentation and workflow checks).
