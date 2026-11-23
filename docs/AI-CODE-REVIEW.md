@@ -38,7 +38,7 @@ Success means fewer escaped defects without adding noisy review work. Track acce
 - WCAG 2.2.2 does not categorically prohibit intentional repeating demonstrations with a working pause, stop or hide mechanism. Respect reduced motion; evaluate actual behavior. Action buttons may change their labels; toggles using aria-pressed should have a stable name. Do not demand mutually incompatible control patterns.
 - Require concrete provenance, license terms or distribution evidence for a licensing defect. Uncertain provenance merits a question, not a claim of infringement. Never request exploit reproduction, credentials or private values.
 - Bounded work and fail-closed behavior are deliberate. Do not require unlimited pagination or speculate about unsupported API response formats without evidence. A limitation with a clear operational diagnostic is not automatically a blocking defect.
-- The maintainer may mention the Reviewer in an existing inline thread to discuss evidence and request a fresh review using the documented command. Replies are advisory and do not change approval state. Group new inline findings under a single submitted review, retaining distinct threads. Preserve authorization, exact-head checks, redaction, deduplication and protected-branch requirements.
+- The maintainer may mention `@oddmash-reviewer[bot]` in an existing inline thread to discuss evidence and request a fresh review using the documented command. Replies are advisory and do not change approval state. Group new inline findings under a single submitted review, retaining distinct threads. Preserve authorization, exact-head checks, redaction, deduplication and protected-branch requirements.
 
 ## Phase 4: maintainer-only auto-merge
 

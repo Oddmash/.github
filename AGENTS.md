@@ -36,6 +36,8 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 ## Collaboration and AI review
 
+- Use the canonical GitHub mention `@oddmash-reviewer[bot]` in review discussions and explicit review commands; do not use the shorter alias in new comments. Follow the existing scoped-verification and review-request rules.
+
 - Use English for issue and pull request titles, bodies, public review discussions, contribution templates, commit messages, and changelog entries in all public repositories. Product READMEs and user-facing documentation retain their existing localization policies. Provide translation help when needed; do not rewrite historical contributions.
 
 - External contributions are optional and scoped. A contribution does not imply recruitment, roadmap ownership, or an ongoing maintainer role.
