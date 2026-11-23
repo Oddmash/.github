@@ -1,0 +1,22 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scope:
+    uses: ./.github/workflows/ci-scope.yml
+    with:
+      profile: meta
+  verify:
+    needs: scope
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify organization changes
+        env:
+          RESULT: ${{ needs.scope.result }}
+        run: test "$RESULT" = success
