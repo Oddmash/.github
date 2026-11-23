@@ -24,7 +24,7 @@ Start with a low-risk public repository and run in report-only mode before posti
 ## Phase 3: organization-wide public repository rollout
 
 - The maintainer has enabled organization-wide installation and explicitly authorized automatic enrollment of current and future public Oddmash repositories, without requiring a separate review workflow in each repository. Validate the organization, installation and public repository at runtime; do not execute contributed code.
-- Private and internal repositories remain outside the central reviewer. Expansion to them or personal repositories requires separate explicit approval and data-handling review.
+- Private repositories may use the central reviewer only under a separately approved repository identity allowlist and data-processing policy. New private repositories are not enrolled automatically. Internal and personal repositories remain excluded. Private auto-merge is prohibited.
 - Keep organization and personal installations separate so a repository transfer is not required for review coverage.
 - Add a non-blocking status check only after the pilot demonstrates stable precision. For a maintainer-enabled independent App, approval requires zero validated findings, no omitted files, and passing current checks. Request changes only for high-confidence actionable findings; incomplete evidence requires a comment and maintainer review. Automatic release and secret access remain out of scope. The advisory reviewer does not merge.
 
