@@ -16,6 +16,10 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 ## Engineering baseline
 
+- Name new source files, folders, assets, documentation files and internal route segments in lowercase kebab-case (`user-profile.tsx`, `use-user-profile.ts`, `user-profile.test.ts`, `user-profile.module.scss`). Preserve framework/tool-required names and syntax (`AGENTS.md`, `SKILL.md`, `README.md`, `package.json`, `page.tsx`, `[id]`), existing public API/import paths, external assets and generated files. For a rename, update references, imports, tests and links together; verify case-sensitive resolution and avoid unrelated mass renames.
+- In JavaScript/TypeScript, use camelCase for variables, functions and hooks (`useUserProfile`), PascalCase for components and types (`UserProfile`), and UPPER_SNAKE_CASE for genuine constants or environment variables. Prefer typed contracts, explicit errors, small domain-focused modules, existing alias conventions and named exports for reusable code where compatible. Use const arrow-function React components without `React.FC`; avoid redundant comments, retain meaningful existing comments and explain nonobvious invariants only when needed. Respect framework-required exports and existing public contracts.
+- Follow the repository's formatter, lint, type-check, import and test conventions; keep tests named after their subject and introduce no competing style/configuration. Use one declared package manager and lockfile. For new JavaScript/TypeScript projects prefer pnpm unless the runtime or product has a documented reason otherwise. Do not migrate existing package managers as incidental work.
+
 - Keep changes focused, reversible, and covered by the checks appropriate to the affected product.
 - Use the package manager, lockfile, runtime, engine, and generated-file boundaries declared by the repository. Do not introduce a shared stack merely for organizational consistency.
 - Give CI and deployment workflows the minimum permissions they need. Pin reusable cross-repository workflows to a reviewed commit.
@@ -32,6 +36,8 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 - Tag and publish from the approved revision under the product's release policy; verify the published artifact. Use the reusable Git workflow skill in the skills catalog for execution guidance when available.
 
 ## UI and design
+
+- Design each public landing and documentation site around its actual audience, principal task and product identity. A library should prioritize working examples and clear native documentation; a product should communicate its real workflow and value; a game should convey actual gameplay and atmosphere. Do not impose one organization-wide visual template. Require actual product evidence, readable copy, responsive renders and a verified first-use path before handoff.
 
 - Accessibility, keyboard operation, reduced motion, responsive behavior, and clear state feedback are product requirements where applicable.
 - Keep product-specific layout, visual tokens, interaction patterns, and game presentation in the product repository.
