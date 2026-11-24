@@ -34,7 +34,8 @@ JavaScript/TypeScript 仓库内部使用 `package.json` 中固定的统一 pnpm 
 - CI 权限保持最小化，并将复用工作流固定到已审查的提交。运行时矩阵、浏览器或引擎配置、部署与发布检查由各产品仓库负责。
 - 产品特定的 UI 与视觉规则保留在项目中。只有多个产品都需要同一项稳定行为时，才将令牌或组件提升到共享包。
 - 不要在示例、测试夹具、日志、截图、提示词或评审评论中放入凭据、签名材料、用户数据或仅限生产环境的值。
-- AI 代码评审只提供建议。它必须遵守仓库的 `AGENTS.md`，说明依据和置信度，避免重复评论，并且不得自动批准、合并、发布或修改机密。参阅 [AI 代码评审计划](../AI-CODE-REVIEW.md)。
+- 专业代理提供建议，Lead 可根据[组织评审政策](../AI-CODE-REVIEW.md)提交正式评审。单独授权的合并权限与评审权限相互独立。首次评审自动运行；获得授权后手动请求完整评审时，在 PR Conversation 评论的首个非空行单独填写 `/review`，补充说明放在后续行。参阅[命令表](https://github.com/Oddmash/oddmash-agents/blob/main/docs/agent-family.md#slash-commands)。
+- 在原评审讨论中回复：已验证的修复使用 `Fixed in <full-current-head-sha>: <change and verification>`，不采纳使用 `Not adopted: <reason and evidence>`，延期使用 `Deferred: <reason and linked issue>`。不要声称完成未实施的修复。完成验证或授权维护者明确决定后再解决讨论，否则保持未解决状态。确认实际讨论状态；解决讨论不代表 CI 通过或评审批准。参阅[评审后续处理](../AI-CODE-REVIEW.md#following-up-on-review-findings)。
 
 ## 提交拉取请求
 
