@@ -1,7 +1,7 @@
 ---
 name: Documentation
 about: Improve product or contributor documentation
-labels: documentation
+labels: 'type: documentation'
 ---
 
 ## Documentation affected
