@@ -14,7 +14,7 @@ Use English for issue and pull request titles, bodies, public review discussions
 
 Select one issue type from the shared template chooser: `type: bug`, `type: fix`, `type: feature`, `type: improvement`, `type: documentation`, `type: refactor`, `type: test`, or `type: chore`. Add relevant `area:` labels for filtering. Preserve project-specific labels; use `good first issue` only when intentionally inviting first-time contributors. Existing PR classification retains its legacy `type: bug` and `type: docs` labels.
 
-The shared [issue label catalog](.github/workflows/oddmash-issue-labels.yml) creates or updates only its managed labels. Each repository calls the reusable workflow with `issues: write` and a reviewed immutable commit reference. Run it after adding or updating the caller and manually when needed. It does not change issue assignments, reviewer labels, merge settings, or permissions beyond the caller's repository scope.
+The shared [issue label catalog](.github/workflows/oddmash-issue-labels.yml) creates or updates only its managed labels. Each repository calls the reusable workflow with `issues: write` and a reviewed immutable commit reference. The caller runs after adding or updating it on `develop` or `main`, and can also run manually when needed. It does not change issue assignments, reviewer labels, merge settings, or permissions beyond the caller's repository scope.
 
 ## Report a problem
 
