@@ -118,3 +118,26 @@ test('old event head cannot validate a newer revision', async () => {
   assert.match(result.failures.join(' '), /head changed/);
   assert.equal(result.commitCalls, 0);
 });
+
+test('recent local issue forms accept required headings and correct type', async () => {
+  const result = await check(makePr(), { issue: {
+    created_at: '2026-11-24T08:31:35Z',
+    labels: [{ name: 'type: chore' }, { name: 'area: workflow' }],
+    body: '### Context\n\nMaintain CI.\n\n### Proposed maintenance\n\nAdd checks.\n\n### Impact and risks\n\nNone.\n\n### Acceptance criteria\n\n- [ ] Checks pass.'
+  } });
+  assert.deepEqual(result.failures, []);
+});
+
+test('recent API-created issue needs a supported type and filled fields', async () => {
+  const issue = { created_at: '2026-11-25T00:00:00Z', body: 'Missing fields.' };
+  const untyped = await check(makePr(), { issue: { ...issue, labels: [] } });
+  assert.match(untyped.failures.join(' '), /exactly one supported issue-form type label/);
+  const malformed = await check(makePr(), { issue: { ...issue, labels: [{ name: 'type: fix' }], body: '## Problem\n\nConfirmed problem.\n\n## Scope\n\n_No response_' } });
+  assert.match(malformed.failures.join(' '), /must fill its Scope field/);
+  assert.match(malformed.failures.join(' '), /must fill its Acceptance criteria field/);
+});
+
+test('legacy local issues remain linkable without retroactive format enforcement', async () => {
+  const result = await check(makePr(), { issue: { created_at: '2026-11-24T08:31:34Z', labels: [], body: 'Legacy issue.' } });
+  assert.deepEqual(result.failures, []);
+});

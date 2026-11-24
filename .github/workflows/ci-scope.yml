@@ -54,28 +54,32 @@ jobs:
             const titlePattern = /^(?:feat|feature|fix|bug|docs|refactor|test|chore|ci|build|perf|improvement|style|revert|release|design|deps)(?:\([a-z0-9][a-z0-9/-]*\))?!?: \S.+$/u;
             if (!titlePattern.test(pr.title)) errors.push('Use a type-prefixed title, e.g. fix: clarify focus behavior.');
             const expected = ['Related issue', 'Summary', 'Verification', 'Product and design impact', 'Permissions and data'];
-            const sections = new Map();
-            const order = [];
-            const lines = (pr.body || '').replace(/<!--[\s\S]*?(?:-->|$)/g, '').split(/\r?\n/);
-            let section = null;
-            let fence = null;
-            for (const line of lines) {
-              const marker = /^\s{0,3}(\x60{3,}|~{3,})/.exec(line);
-              if (marker) {
-                if (!fence) fence = marker[1];
-                else if (marker[1][0] === fence[0] && marker[1].length >= fence.length && new RegExp('^\\s{0,3}' + fence[0] + '{' + fence.length + ',}\\s*$').test(line)) fence = null;
-                continue;
+            const readSections = (body, expected, issue = false) => {
+              const sections = new Map();
+              const order = [];
+              const lines = (body || '').replace(/<!--[\s\S]*?(?:-->|$)/g, '').split(/\r?\n/);
+              let section = null;
+              let fence = null;
+              for (const line of lines) {
+                const marker = /^\s{0,3}(\x60{3,}|~{3,})/.exec(line);
+                if (marker) {
+                  if (!fence) fence = marker[1];
+                  else if (marker[1][0] === fence[0] && marker[1].length >= fence.length && new RegExp('^\\s{0,3}' + fence[0] + '{' + fence.length + ',}\\s*$').test(line)) fence = null;
+                  continue;
+                }
+                if (fence) continue;
+                const heading = (issue ? /^#{2,3} ([^#]+?)\s*$/ : /^## ([^#]+?)\s*$/).exec(line);
+                if (heading) {
+                  section = heading[1].trim();
+                  if (expected.includes(section)) order.push(section);
+                  if (!sections.has(section)) sections.set(section, []);
+                  continue;
+                }
+                if (section !== null) sections.get(section).push(line);
               }
-              if (fence) continue;
-              const heading = /^## ([^#]+?)\s*$/.exec(line);
-              if (heading) {
-                section = heading[1].trim();
-                if (expected.includes(section)) order.push(section);
-                if (!sections.has(section)) sections.set(section, []);
-                continue;
-              }
-              if (section !== null) sections.get(section).push(line);
-            }
+              return { sections, order };
+            };
+            const { sections, order } = readSections(pr.body, expected);
             if (order.join('|') !== expected.join('|')) errors.push('Use each required ## heading once, in template order: ' + expected.join(', ') + '.');
             const prompts = new Set([
               'what changed and why?',
@@ -108,10 +112,41 @@ jobs:
             if (!references.length) errors.push('Add a valid issue reference in Related issue, e.g. Refs #123 or Closes owner/repo#123.');
             if (pr.base.ref !== pr.base.repo.default_branch && references.some(ref => ref.verb === 'closes')) errors.push('Use Refs for an integration branch; use Closes only for completed work on the default branch.');
             const local = (context.repo.owner + '/' + context.repo.repo).toLowerCase();
+            const issueFormatSince = Date.parse('2026-11-24T08:31:35Z');
+            const issueFields = {
+              'type: bug': ['Expected behavior', 'Observed behavior', 'Reproduction steps', 'Environment'],
+              'type: chore': ['Context', 'Proposed maintenance', 'Impact and risks', 'Acceptance criteria'],
+              'type: documentation': ['Documentation affected', 'Current gap', 'Proposed changes', 'Acceptance criteria'],
+              'type: feature': ['Problem or opportunity', 'Proposed feature', 'Use cases', 'Scope and non-goals', 'Acceptance criteria'],
+              'type: fix': ['Problem', 'Scope', 'Expected behavior', 'Acceptance criteria'],
+              'type: improvement': ['Current behavior', 'Proposed improvement', 'Expected benefits', 'Acceptance criteria'],
+              'type: refactor': ['Current implementation', 'Motivation', 'Proposed approach', 'Compatibility constraints', 'Acceptance criteria'],
+              'type: test': ['Behavior to verify', 'Test gap', 'Proposed scenarios', 'Acceptance criteria']
+            };
+            const validateIssue = issue => {
+              if (Date.parse(issue.created_at) < issueFormatSince || !issue.created_at) return;
+              const types = (issue.labels || []).map(label => typeof label === 'string' ? label : label.name)
+                .filter(label => Object.hasOwn(issueFields, label));
+              if (types.length !== 1) {
+                errors.push('A newly created local issue needs exactly one supported issue-form type label.');
+                return;
+              }
+              const fields = issueFields[types[0]];
+              const parsed = readSections(issue.body, fields, true);
+              for (const field of fields) {
+                const filled = (parsed.sections.get(field) || []).some(line => {
+                  const value = normalize(line);
+                  return /[\p{L}\p{N}]/u.test(value) && !/^(?:tbd|todo|placeholder|fill me in|_no response_)[.!]?$/i.test(value) &&
+                    (!/^(?:none|n\/a|not applicable)[.!]?$/i.test(value) || ['Impact and risks', 'Compatibility constraints', 'Scope and non-goals'].includes(field));
+                });
+                if (!filled) errors.push('A newly created local issue must fill its ' + field + ' field.');
+              }
+            };
             for (const number of new Set(references.filter(ref => ref.repository === local).map(ref => ref.number))) {
               try {
                 const issue = (await github.rest.issues.get({ ...context.repo, issue_number: number })).data;
                 if (issue.pull_request) errors.push('A local reference targets a pull request, not an issue.');
+                else validateIssue(issue);
               } catch {
                 errors.push('A local issue reference could not be verified. Check the issue number and read permission.');
               }

@@ -48,3 +48,4 @@ JavaScript/TypeScript 仓库内部使用 `package.json` 中固定的统一 pnpm 
 - 填写[共用 PR 模板](../../PULL_REQUEST_TEMPLATE.md)的所有必填部分，并为标题和维护者主题分支的提交标题添加类型前缀，例如 `fix: clarify focus`。不重写外部贡献者的提交和现有发布合并历史。
 - 公开仓库的网页 Issue 表单有必填字段。私有仓库、API/CLI 创建、编辑以及维护者创建的空白 Issue 可以绕过表单，因此代理必须自行检查正文和标签。
 - [共用 CI 检查](../../CONTRIBUTING.md#contribution-format-checks)以只读权限验证 PR 标题、正文结构、本地 Issue 引用等。证据是否真实、语言是否合规仍需审核。每个仓库需要升级到已审核的 CI 版本、启用 PR 编辑事件并保留现有必需检查和权限。
+- 从政策引入 Issue 的创建时间 2026-11-24 08:31:35 UTC 起，本地 Issue 必须具有一个支持的类型标签和已填写的必填表单部分。旧 Issue 不受追溯检查。
