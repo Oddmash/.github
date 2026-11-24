@@ -2,7 +2,7 @@
 
 [English](../../profile/README.md) · [한국어](../ko/README.md) · **日本語** · [简体中文](../zh-CN/README.md)
 
-![Oddmash seven-agent family](../../assets/agent-family.svg)
+![Reviewer、Impact、Triage、QA、Release、Docs、Architect の7つの役割カードを示す Oddmash スタジオのバナー](../../assets/agent-family.svg)
 
 Oddmash は七つの専門AIアドバイザーと開発者ツールやWebサービスを作る、一人の独立系スタジオです。製品の判断とリリースはメンテナーが担います。
 
