@@ -32,6 +32,9 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Validate package manager pin
+        run: |
+          node -e 'const expected = "pnpm@11.25.0"; const actual = require("./package.json").packageManager; if (actual !== expected) { console.error(`Expected packageManager ${expected}, received ${actual ?? "missing"}`); process.exitCode = 1; }'
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
         with:
           package_json_file: ${{ inputs.working-directory }}/package.json
