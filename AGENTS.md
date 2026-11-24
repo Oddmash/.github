@@ -29,10 +29,26 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 - Verify repository identity, remote, base revision, branch and existing changes before editing. Preserve user work and contributor authorship. Use focused branches and follow local naming conventions; absent one, prefer `feat/`, `fix/`, `docs/`, `refactor/`, `test/` or `chore/` with a descriptive slug.
 - Keep commits small and coherent, with concise English subjects for public repositories. Stage only intended changes; inspect diffs and exclude secrets, unrelated files and unnecessary generated artifacts.
-- Credit Oddmash Reviewer when a commit materially implements its review finding: append `Co-authored-by: oddmash-reviewer[bot] <360059368+oddmash-reviewer[bot]@users.noreply.github.com>` after a blank line in the commit message. Include the trailer only for actual review contributions, not unrelated commits, and preserve existing authorship. Do not rewrite previously pushed history to add credit.
+- Attribute substantive agent contributions using the [agent contribution attribution](#agent-contribution-attribution) convention below.
 - Link relevant issues according to the repository workflow. Use PR templates and describe scope, actual verification, compatibility and release impact. Open pull requests as ready for review by default, including when remote CI or review is pending. Use a draft only when explicitly requested, implementation is materially incomplete, or review would be misleading because essential evidence is unavailable. State the draft reason and condition for becoming ready; mark it ready promptly when resolved. Follow current exact-head CI and review requirements before an authorized merge.
 - Keep protected branches protected. Never force-push shared branches, bypass checks, rewrite contributor history or discard unrelated work without explicit maintainer authorization. Prefer corrective commits or revert PRs for shared history. Follow the merge rules under Collaboration and AI review.
 - Tag and publish from the approved revision under the product's release policy; verify the published artifact. Use the reusable Git workflow skill in the skills catalog for execution guidance when available.
+
+## Agent contribution attribution
+
+Credit each Oddmash agent whose verified review or advisory materially contributes to a commit. Add one Git `Co-authored-by` trailer per actual attributed GitHub account after a blank line at the end of the commit message. Use the authenticated source comment or review author's identity, not merely the role named in its text. Record the source role or discussion in the commit body or PR evidence when coordinated advice is posted by Reviewer instead of a dedicated role account. Deduplicate trailers by account; do not credit an agent merely for running, approving, or producing an unused recommendation. Preserve human authorship and do not rewrite previously published history.
+
+| Agent account | Verified Git trailer |
+| --- | --- |
+| Reviewer | `Co-authored-by: oddmash-reviewer[bot] <360059368+oddmash-reviewer[bot]@users.noreply.github.com>` |
+| Impact | `Co-authored-by: oddmash-impact[bot] <360494540+oddmash-impact[bot]@users.noreply.github.com>` |
+| Triage | `Co-authored-by: oddmash-triage[bot] <360494678+oddmash-triage[bot]@users.noreply.github.com>` |
+| QA | `Co-authored-by: oddmash-qa[bot] <360494749+oddmash-qa[bot]@users.noreply.github.com>` |
+| Release | `Co-authored-by: oddmash-release[bot] <360494807+oddmash-release[bot]@users.noreply.github.com>` |
+| Docs | `Co-authored-by: oddmash-docs[bot] <360494869+oddmash-docs[bot]@users.noreply.github.com>` |
+| Architect | `Co-authored-by: oddmash-architect[bot] <360494928+oddmash-architect[bot]@users.noreply.github.com>` |
+
+For any renamed or newly configured bot, verify its actual GitHub account and no-reply identity before changing the registered trailer. Attribution does not grant approval, execution, merge, or deployment authority.
 
 ## UI and design
 
