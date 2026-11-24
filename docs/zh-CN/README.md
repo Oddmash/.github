@@ -25,4 +25,4 @@ Oddmash 是由一位开发者运营的独立工作室，借助七个专业 AI �
 - [Interaction Inspector](https://github.com/Oddmash/interaction-inspector): 在 Chrome 中检查 DOM 事件及焦点。
 - [Boundra](https://github.com/Oddmash/boundra): 检查 TypeScript 的领域边界。
 
-公开项目欢迎具体的问题报告及改进建议。请参阅[贡献指南](CONTRIBUTING.md)。
+公开项目欢迎具体的问题报告及改进建议。请参阅[贡献指南](https://github.com/Oddmash/.github/blob/main/docs/zh-CN/CONTRIBUTING.md)。
