@@ -1,7 +1,7 @@
 ---
 name: Improvement
 about: Improve an existing capability or experience
-labels: enhancement
+labels: 'type: improvement'
 ---
 
 ## Current behavior

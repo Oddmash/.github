@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Report a reproducible issue with an Oddmash project
-labels: bug
+labels: 'type: bug'
 ---
 
 ## Expected behavior
