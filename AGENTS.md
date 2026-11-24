@@ -24,6 +24,9 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 ## Git and repository workflow
 
+- Use `develop` as the integration branch and `main` as the production/release branch. Open focused implementation PRs into `develop`; consolidate tested changes into a release PR to `main`. Keep `main` as the default branch. Synchronize `develop` after any urgent direct release fix through a normal reviewed PR.
+- Run required checks on implementation and release PRs, keep stable aggregate check names, and cancel superseded PR runs. Use existing change-scope detection and dependency caches; do not duplicate full checks on every integration-branch push or skip required checks solely to reduce cost. Keep release and production publishing restricted to the approved main revision or explicit release event. Preview deployments are opt-in where practical.
+
 - Verify repository identity, remote, base revision, branch and existing changes before editing. Preserve user work and contributor authorship. Use focused branches and follow local naming conventions; absent one, prefer `feat/`, `fix/`, `docs/`, `refactor/`, `test/` or `chore/` with a descriptive slug.
 - Keep commits small and coherent, with concise English subjects for public repositories. Stage only intended changes; inspect diffs and exclude secrets, unrelated files and unnecessary generated artifacts.
 - Credit Oddmash Reviewer when a commit materially implements its review finding: append `Co-authored-by: oddmash-reviewer[bot] <360059368+oddmash-reviewer[bot]@users.noreply.github.com>` after a blank line in the commit message. Include the trailer only for actual review contributions, not unrelated commits, and preserve existing authorship. Do not rewrite previously pushed history to add credit.
