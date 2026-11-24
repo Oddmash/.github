@@ -1,0 +1,178 @@
+name: Oddmash issue label catalog
+on:
+  workflow_call:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 2 * * 1'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/oddmash-issue-labels.yml'
+permissions:
+  issues: write
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const catalog = {
+              "type: bug": [
+                "d73a4a",
+                "Reports a defect"
+              ],
+              "type: fix": [
+                "d73a4a",
+                "Fixes a confirmed defect"
+              ],
+              "type: feature": [
+                "a2eeef",
+                "Adds functionality"
+              ],
+              "type: improvement": [
+                "84b6eb",
+                "Improves existing behavior"
+              ],
+              "type: documentation": [
+                "0075ca",
+                "Documentation changes"
+              ],
+              "type: docs": [
+                "0075ca",
+                "Documentation changes (PR compatibility)"
+              ],
+              "type: refactor": [
+                "c5def5",
+                "Internal restructuring"
+              ],
+              "type: test": [
+                "bfdadc",
+                "Test coverage"
+              ],
+              "type: chore": [
+                "e4e669",
+                "Maintenance or tooling"
+              ],
+              "type: other": [
+                "ededed",
+                "Other change type"
+              ],
+              "area: accessibility": [
+                "ededed",
+                "Work related to accessibility"
+              ],
+              "area: architecture": [
+                "ededed",
+                "Work related to architecture"
+              ],
+              "area: audio": [
+                "ededed",
+                "Work related to audio"
+              ],
+              "area: ci": [
+                "ededed",
+                "Work related to ci"
+              ],
+              "area: cli": [
+                "ededed",
+                "Work related to cli"
+              ],
+              "area: compatibility": [
+                "ededed",
+                "Work related to compatibility"
+              ],
+              "area: core": [
+                "ededed",
+                "Work related to core"
+              ],
+              "area: data": [
+                "ededed",
+                "Work related to data"
+              ],
+              "area: dependencies": [
+                "ededed",
+                "Work related to dependencies"
+              ],
+              "area: deployment": [
+                "ededed",
+                "Work related to deployment"
+              ],
+              "area: design": [
+                "ededed",
+                "Work related to design"
+              ],
+              "area: documentation": [
+                "ededed",
+                "Work related to documentation"
+              ],
+              "area: editor": [
+                "ededed",
+                "Work related to editor"
+              ],
+              "area: export": [
+                "ededed",
+                "Work related to export"
+              ],
+              "area: gameplay": [
+                "ededed",
+                "Work related to gameplay"
+              ],
+              "area: generator": [
+                "ededed",
+                "Work related to generator"
+              ],
+              "area: maps": [
+                "ededed",
+                "Work related to maps"
+              ],
+              "area: observability": [
+                "ededed",
+                "Work related to observability"
+              ],
+              "area: performance": [
+                "ededed",
+                "Work related to performance"
+              ],
+              "area: permissions": [
+                "ededed",
+                "Work related to permissions"
+              ],
+              "area: release": [
+                "ededed",
+                "Work related to release"
+              ],
+              "area: review": [
+                "ededed",
+                "Work related to review"
+              ],
+              "area: runtime": [
+                "ededed",
+                "Work related to runtime"
+              ],
+              "area: tooling": [
+                "ededed",
+                "Work related to tooling"
+              ],
+              "area: workflow": [
+                "ededed",
+                "Work related to workflow"
+              ]
+            };
+            const current = await github.paginate(github.rest.issues.listLabelsForRepo, { owner, repo, per_page: 100 });
+            const existing = new Map(current.map(label => [label.name, label]));
+            for (const [name, [color, description]] of Object.entries(catalog)) {
+              const label = existing.get(name);
+              if (!label) {
+                try {
+                  await github.rest.issues.createLabel({ owner, repo, name, color, description });
+                } catch (error) {
+                  if (error.status !== 422) throw error;
+                  await github.rest.issues.getLabel({ owner, repo, name });
+                }
+              } else if (label.color !== color || label.description !== description) {
+                await github.rest.issues.updateLabel({ owner, repo, name, color, description });
+              }
+            }
