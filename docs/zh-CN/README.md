@@ -23,7 +23,7 @@ Oddmash 是一家独立软件工作室，开发改善日常开发体验的开源
 
 ## 审查辅助智能体
 
-[Oddmash Agents](https://github.com/Oddmash/oddmash-agents) 通过面向拉取请求的专业审查角色补充开发指导。Lead 负责协调审查，专业角色评估变更影响、问题分类、测试、发布说明、文档和架构。CI 和维护者仍承担必需的检查与审批职责。
+[Oddmash Agents](https://github.com/Oddmash/oddmash-agents) 通过专业建议补充开发指导。Lead 负责协调正式的拉取请求审查。其他智能体按请求提供建议，Impact、QA、Release、Docs 和 Architect 分别评估各自的专业领域，Triage 专注于问题分类和优先级排序。CI 和维护者仍承担必需的检查与审批职责。
 
 ## 开发方式
 
