@@ -2,7 +2,7 @@
 
 [English](../../profile/README.md) · [한국어](../ko/README.md) · [日本語](../ja/README.md) · **简体中文**
 
-![Oddmash seven-agent family](../../assets/agent-family.svg)
+![展示 Reviewer、Impact、Triage、QA、Release、Docs 和 Architect 七个角色卡片的 Oddmash 工作室横幅](../../assets/agent-family.svg)
 
 Oddmash 是由一位开发者运营的独立工作室，借助七个专业 AI 顾问构建开发工具和 Web 服务。产品决策与发布由维护者负责。
 
