@@ -2,16 +2,27 @@
 
 [English](../../profile/README.md) · [한국어](../ko/README.md) · **日本語** · [简体中文](../zh-CN/README.md)
 
-**Independent Software Studio**
+![Reviewer、Impact、Triage、QA、Release、Docs、Architect の7つの役割カードを示す Oddmash スタジオのバナー](../../assets/agent-family.svg)
 
-Oddmash は、Web サービス、ゲーム、開発者ツール、AI エージェントを制作・運営する一人の独立系ソフトウェアスタジオです。小さく明確なアイデアを役立つ製品にしながら、各プロジェクトに必要な技術的・視覚的な個性を保ちます。
+Oddmash は七つの専門AIアドバイザーと開発者ツールやWebサービスを作る、一人の独立系スタジオです。製品の判断とリリースはメンテナーが担います。
 
-**小さなアイデアを、実際のプロダクトへ。**
+## AIエージェント
 
-## プロジェクト
+- **Reviewer**: コードの具体的な問題を確認します。
+- **Impact**: 製品価値と変更の必要性を評価します。
+- **Triage**: 課題を分類し、優先順位を提案します。
+- **QA**: テスト範囲と実行結果を分析します。
+- **Release**: リリースノートと互換性の案内を作ります。
+- **Docs**: コードと文書の不一致を確認します。
+- **Architect**: 設計と保守性を評価します。
 
-- [Interaction Inspector](https://github.com/Oddmash/interaction-inspector/blob/main/docs/ja/README.md) は、DOM イベント、キーボードフォーカス、要素の状態を調べる Chrome 拡張機能です。
-- [Vertactics](https://github.com/Oddmash/Vertactics) は、ターン制バトルマップを設計・共有するブラウザベースのビジュアルエディターです。[試してみる](https://oddmash.github.io/Vertactics/)
-- [Oddmash UI](https://github.com/Oddmash/oddmash-ui/blob/main/docs/ja/README.md) は、Oddmash 製品で共有する React コンポーネントとデザイントークンの基盤です。
+Reviewerのみ自動実行します。他の役割はメンテナーの明示的な依頼に応じ、独立したリリースやマージを行いません。
 
-公開プロジェクトでは自発的な外部コントリビューションを歓迎します。Oddmash は積極的な採用やコントリビューターコミュニティの運営を前提としていません。参加する場合は、該当プロジェクトに具体的な問題や改善案をお寄せください。[コントリビューションガイド](CONTRIBUTING.md)
+## 公開プロジェクト
+
+- [Kowrap](https://github.com/Oddmash/kowrap): Web上の自然な韓国語の改行。
+- [Oddmash UI](https://github.com/Oddmash/oddmash-ui): アクセシブルなReactコンポーネントとトークン。
+- [Interaction Inspector](https://github.com/Oddmash/interaction-inspector): ChromeでDOMイベントとフォーカスを調べる。
+- [Boundra](https://github.com/Oddmash/boundra): TypeScriptのドメイン境界を検査する。
+
+公開プロジェクトでは具体的な問題報告や改善提案を歓迎します。[コントリビューションガイド](https://github.com/Oddmash/.github/blob/main/docs/ja/CONTRIBUTING.md)をご覧ください。
