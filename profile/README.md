@@ -2,16 +2,27 @@
 
 **English** · [한국어](https://github.com/Oddmash/.github/blob/main/docs/ko/README.md) · [日本語](https://github.com/Oddmash/.github/blob/main/docs/ja/README.md) · [简体中文](https://github.com/Oddmash/.github/blob/main/docs/zh-CN/README.md)
 
-**Independent Software Studio**
+![Oddmash studio banner showing seven agent role cards: Reviewer, Impact, Triage, QA, Release, Docs, and Architect](https://raw.githubusercontent.com/Oddmash/.github/main/assets/agent-family.svg)
 
-Oddmash is a one-person studio building and operating web services, games, developer tools, and AI agents. We turn focused ideas into useful products while letting each project keep the technical and visual identity it needs.
+Oddmash is an independent, one-person software studio building developer tools and web experiences with seven specialized AI advisors. The maintainer owns product decisions and releases.
 
-**Small ideas. Real products.**
+## Agent family
 
-## Projects
+- **Reviewer**: Reviews code and identifies actionable regressions.
+- **Impact**: Evaluates product value and trade-offs.
+- **Triage**: Classifies issues and suggests priorities.
+- **QA**: Assesses test coverage and reported checks.
+- **Release**: Drafts release notes and compatibility guidance.
+- **Docs**: Finds documentation gaps.
+- **Architect**: Evaluates design and maintainability.
 
-- [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) — a Chrome extension for inspecting DOM events, keyboard focus, and element state.
-- [Vertactics](https://github.com/Oddmash/Vertactics) — a browser-based visual editor for designing and sharing turn-based battle maps. [Try it](https://oddmash.github.io/Vertactics/)
-- [Oddmash UI](https://github.com/Oddmash/oddmash-ui) — the shared React components and design-token foundation for Oddmash products.
+Reviewer runs automatically. Other roles respond to explicit maintainer requests. They provide advice, not independent release or merge authorization.
 
-Public projects welcome voluntary contributions. Oddmash is not actively recruiting or running a contributor community; the best way to help is to report a focused problem or propose a concrete improvement in the relevant project. [Contribution guide](https://github.com/Oddmash/.github/blob/main/CONTRIBUTING.md)
+## Public projects
+
+- [Kowrap](https://github.com/Oddmash/kowrap): Natural Korean line breaking for the web.
+- [Oddmash UI](https://github.com/Oddmash/oddmash-ui): Accessible React components and design tokens.
+- [Interaction Inspector](https://github.com/Oddmash/interaction-inspector): Inspect DOM events and keyboard focus in Chrome.
+- [Boundra](https://github.com/Oddmash/boundra): Enforce domain boundaries in TypeScript.
+
+Public projects welcome focused issue reports and concrete improvements. Read the [contribution guide](https://github.com/Oddmash/.github/blob/main/CONTRIBUTING.md).
