@@ -25,4 +25,4 @@ Reviewerのみ自動実行します。他の役割はメンテナーの明示的
 - [Interaction Inspector](https://github.com/Oddmash/interaction-inspector): ChromeでDOMイベントとフォーカスを調べる。
 - [Boundra](https://github.com/Oddmash/boundra): TypeScriptのドメイン境界を検査する。
 
-公開プロジェクトでは具体的な問題報告や改善提案を歓迎します。[コントリビューションガイド](CONTRIBUTING.md)をご覧ください。
+公開プロジェクトでは具体的な問題報告や改善提案を歓迎します。[コントリビューションガイド](https://github.com/Oddmash/.github/blob/main/docs/ja/CONTRIBUTING.md)をご覧ください。
