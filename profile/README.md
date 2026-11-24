@@ -23,7 +23,7 @@ Oddmash is an independent software studio building open-source tools for a bette
 
 ## Advisory review agents
 
-[Oddmash Agents](https://github.com/Oddmash/oddmash-agents) complements that guidance with specialized review roles for pull requests. Lead coordinates review; specialist roles assess impact, triage, testing, release notes, documentation and architecture. CI and maintainers retain their required checks and approval responsibilities.
+[Oddmash Agents](https://github.com/Oddmash/oddmash-agents) complements that guidance with specialized advisory roles. Lead coordinates the formal pull request review. Other agents provide advice on request: Impact, QA, Release, Docs and Architect assess their respective concerns, while Triage focuses on issue classification and prioritization. CI and maintainers retain their required checks and approval responsibilities.
 
 ## How we work
 
