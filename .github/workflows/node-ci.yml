@@ -9,7 +9,7 @@ on:
         type: string
         default: '24'
       working-directory:
-        description: Directory containing package.json and package-lock.json
+        description: Directory containing package.json and pnpm-lock.yaml
         required: false
         type: string
         default: '.'
@@ -31,17 +31,23 @@ jobs:
       run:
         working-directory: ${{ inputs.working-directory }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Validate package manager pin
+        run: |
+          node -e 'const expected = "pnpm@11.25.0"; const actual = require("./package.json").packageManager; if (actual !== expected) { console.error(`Expected packageManager ${expected}, received ${actual ?? "missing"}`); process.exitCode = 1; }'
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
+        with:
+          package_json_file: ${{ inputs.working-directory }}/package.json
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: ${{ inputs.node-version }}
-          cache: npm
-          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
       - name: Install dependencies
         if: ${{ !inputs.ignore-install-scripts }}
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Install dependencies without lifecycle scripts
         if: ${{ inputs.ignore-install-scripts }}
-        run: npm ci --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Run repository CI contract
-        run: npm run ci
+        run: pnpm run ci

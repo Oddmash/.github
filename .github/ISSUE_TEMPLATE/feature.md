@@ -1,7 +1,7 @@
 ---
 name: Feature
 about: Propose a new capability
-labels: enhancement
+labels: 'type: feature'
 ---
 
 ## Problem or opportunity

@@ -1,7 +1,7 @@
 ---
 name: Fix
 about: Plan a confirmed bug fix
-labels: bug
+labels: 'type: fix'
 ---
 
 ## Problem
