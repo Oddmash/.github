@@ -2,7 +2,7 @@
 
 [English](../../profile/README.md) · **한국어** · [日本語](../ja/README.md) · [简体中文](../zh-CN/README.md)
 
-![Oddmash seven-agent family](../../assets/agent-family.svg)
+![Reviewer, Impact, Triage, QA, Release, Docs, Architect의 일곱 역할 카드가 표시된 Oddmash 스튜디오 배너](../../assets/agent-family.svg)
 
 Oddmash는 일곱 역할의 AI 에이전트와 개발 도구 및 웹 서비스를 만드는 1인 독립 스튜디오입니다. 제품 결정과 릴리스의 책임은 메인테이너에게 있습니다.
 
