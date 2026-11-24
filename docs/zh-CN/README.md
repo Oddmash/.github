@@ -2,16 +2,27 @@
 
 [English](../../profile/README.md) · [한국어](../ko/README.md) · [日本語](../ja/README.md) · **简体中文**
 
-**Independent Software Studio**
+![Oddmash seven-agent family](../../assets/agent-family.svg)
 
-Oddmash 是一个由个人运营的独立软件工作室，开发和运营 Web 服务、游戏、开发者工具与 AI 智能体。我们把小而明确的想法做成实用产品，同时保留每个项目所需的技术与视觉个性。
+Oddmash 是由一位开发者运营的独立工作室，借助七个专业 AI 顾问构建开发工具和 Web 服务。产品决策与发布由维护者负责。
 
-**小想法，真实产品。**
+## 智能体团队
 
-## 项目
+- **Reviewer**: 审查代码并指出具体问题。
+- **Impact**: 评估产品价值和变更必要性。
+- **Triage**: 分类问题并建议优先级。
+- **QA**: 分析测试覆盖及检查结果。
+- **Release**: 起草发布说明和兼容性指南。
+- **Docs**: 检查代码与文档的一致性。
+- **Architect**: 评估设计和可维护性。
 
-- [Interaction Inspector](https://github.com/Oddmash/interaction-inspector/blob/main/docs/zh-CN/README.md) 是一款用于检查 DOM 事件、键盘焦点和元素状态的 Chrome 扩展。
-- [Vertactics](https://github.com/Oddmash/Vertactics) 是一款用于设计和分享回合制战斗地图的浏览器可视化编辑器。[在线体验](https://oddmash.github.io/Vertactics/)
-- [Oddmash UI](https://github.com/Oddmash/oddmash-ui/blob/main/docs/zh-CN/README.md) 是 Oddmash 产品共享的 React 组件与设计令牌基础。
+只有 Reviewer 自动运行。其他角色响应维护者的明确请求，不独立发布或合并代码。
 
-公开项目欢迎自发的外部贡献。Oddmash 不主动招募团队成员，也不以运营贡献者社区为前提；如希望参与，请在相应项目中提交具体问题或改进建议。[贡献指南](CONTRIBUTING.md)
+## 公开项目
+
+- [Kowrap](https://github.com/Oddmash/kowrap): 适用于 Web 的自然韩语换行。
+- [Oddmash UI](https://github.com/Oddmash/oddmash-ui): 无障碍 React 组件与设计令牌。
+- [Interaction Inspector](https://github.com/Oddmash/interaction-inspector): 在 Chrome 中检查 DOM 事件及焦点。
+- [Boundra](https://github.com/Oddmash/boundra): 检查 TypeScript 的领域边界。
+
+公开项目欢迎具体的问题报告及改进建议。请参阅[贡献指南](CONTRIBUTING.md)。
