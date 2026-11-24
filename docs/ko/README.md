@@ -14,7 +14,7 @@ Oddmash는 일상적인 개발 경험을 개선하는 오픈소스 도구를 만
 | --- | --- |
 | [줄이야 (Juliya, Kowrap)](https://github.com/Oddmash/kowrap) | 기존 Kowrap 인터페이스를 유지하면서 한국어, 영어, 일본어, 중국어 간체의 줄바꿈을 개선합니다. |
 | [Oddmash UI](https://github.com/Oddmash/oddmash-ui) | 접근성을 고려한 컴포넌트와 테마별 디자인 토큰으로 일관된 React 인터페이스를 만듭니다. |
-| [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) | Chrome에서 DOM 이벤트, 키보드 포커스와 주요 ARIA 상태를 검사합니다. |
+| [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) | Chrome에서 DOM 이벤트, 키보드 포커스와 `aria-expanded` 등 지원되는 ARIA 상태를 검사합니다. |
 | [Boundra](https://github.com/Oddmash/boundra) | TypeScript 계약을 정의하고 아키텍처 경계 위반을 발견합니다. |
 
 ## 재사용 가능한 개발 스킬

@@ -14,7 +14,7 @@ Oddmash 是一家独立软件工作室，开发改善日常开发体验的开源
 | --- | --- |
 | [Juliya (Kowrap)](https://github.com/Oddmash/kowrap) | 保留现有 Kowrap 接口，改善韩语、英语、日语和简体中文的文本换行。 |
 | [Oddmash UI](https://github.com/Oddmash/oddmash-ui) | 利用无障碍组件与支持主题的设计令牌，构建一致的 React 界面。 |
-| [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) | 在 Chrome 中检查 DOM 事件、键盘焦点和主要 ARIA 状态。 |
+| [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) | 在 Chrome 中检查 DOM 事件、键盘焦点和受支持的 ARIA 状态（如 `aria-expanded`）。 |
 | [Boundra](https://github.com/Oddmash/boundra) | 定义 TypeScript 契约，并检测架构边界违规。 |
 
 ## 可复用的开发技能
