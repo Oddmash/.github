@@ -76,8 +76,8 @@ Lead is the verified renamed account; historical Reviewer trailers remain valid 
 
 ## Collaboration and AI review
 
-- After pushing and verifying a change that addresses review feedback, reply in the original GitHub thread and mention the account that raised it. This applies to maintainers, contributors, and coding agents. State what changed and give the current head and actual verification evidence. For Oddmash bot findings, use the exact-head follow-up format in [AI code review](docs/AI-CODE-REVIEW.md#following-up-on-review-findings).
-- Use `@oddmash-lead[bot]` for Lead findings and explicit Lead review commands. Mention the specialist's own GitHub account for specialist findings. Leave the thread open for the reviewer to verify or resolve. Record disagreement and deferral with a reason in the same thread.
+- After pushing and verifying a change that addresses review feedback, reply in the original GitHub thread. Address human reviewers and bots without automatic thread routing by their authenticated account. This applies to maintainers, contributors, and coding agents. State what changed and give the current head and actual verification evidence. For Oddmash bot findings, use the exact-head follow-up format in [AI code review](docs/AI-CODE-REVIEW.md#following-up-on-review-findings).
+- Use `@oddmash-lead[bot]` for explicit Lead commands. When automatic inline routing is available, the thread identifies the owning bot. For explicit replies to a specialist, mention its own GitHub account. Leave the thread open for the reviewer to verify or resolve. Record disagreement and deferral with a reason in the same thread.
 
 - Use English for issue and pull request titles, bodies, public review discussions, contribution templates, commit messages, and changelog entries in all public repositories. Product READMEs and user-facing documentation retain their existing localization policies. Provide translation help when needed; do not rewrite historical contributions.
 

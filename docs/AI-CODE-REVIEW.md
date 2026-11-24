@@ -38,17 +38,21 @@ Success means fewer escaped defects without adding noisy review work. Track acce
 - WCAG 2.2.2 does not categorically prohibit intentional repeating demonstrations with a working pause, stop or hide mechanism. Respect reduced motion; evaluate actual behavior. Action buttons may change their labels; toggles using aria-pressed should have a stable name. Do not demand mutually incompatible control patterns.
 - Require concrete provenance, license terms or distribution evidence for a licensing defect. Uncertain provenance merits a question, not a claim of infringement. Never request exploit reproduction, credentials or private values.
 - Bounded work and fail-closed behavior are deliberate. Do not require unlimited pagination or speculate about unsupported API response formats without evidence. A limitation with a clear operational diagnostic is not automatically a blocking defect.
-- The maintainer may mention the bot that opened an inline thread to discuss evidence there. Use `/review` for a full Lead review. Replies are advisory and do not change approval state. Group new inline findings under a single submitted review, retaining distinct threads. Preserve authorization, exact-head checks, redaction, deduplication and protected-branch requirements.
+- The maintainer may reply directly in an inline thread to discuss its evidence. Use `/review` for a full Lead review. Replies are advisory and do not change approval state. Group new inline findings under a single submitted review, retaining distinct threads. Preserve authorization, exact-head checks, redaction, deduplication and protected-branch requirements.
 
 ## Following up on review findings
 
-After pushing a fix and verifying it, reply directly in each affected inline thread. Mention the human reviewer or the exact bot account that opened it. Include the change, the current head, and what you actually verified. For an Oddmash bot, use the following format with the full 40-character current PR head.
+After pushing a fix and verifying it, reply directly in each affected inline thread. Include the change, the current head and what you actually verified. On repositories with automatic inline routing, an Oddmash bot finding accepts this format with the full 40-character current PR head.
 
 ```text
-@oddmash-lead[bot] Fixed in <full-current-head-sha>: <what changed and how it was verified>
+Fixed in <full-current-head-sha>: <what changed and how it was verified>
 ```
 
-For a specialist finding, substitute its account, for example `@oddmash-qa[bot]`. The owning bot can check an authorized maintainer's reply on an open, ready PR and resolve its own thread if the current diff verifies the correction and GitHub confirms resolution. A bot response or reaction alone does not record resolution. If the change is disputed, intentionally deferred, or unverified, explain the disposition in the original thread and leave it open for reviewer follow-up. Use a normal evidence summary for findings that were posted in the PR conversation and have no inline thread.
+The thread identifies the owning bot. Where automatic routing is unavailable, prefix the reply with the authenticated account that opened the thread, such as `@oddmash-qa[bot]`. For human reviewers, use their account. For findings without an inline thread, write the evidence summary in PR Conversation and follow the bot's explicit reference and mention format.
+
+The owning bot can check an authorized maintainer reply on an open, ready PR and resolve the thread when the current diff proves the correction and GitHub confirms resolution. Check the GitHub thread state after a confirmation. If the bot lacks permission, a repository maintainer can resolve it after verifying the evidence. For disputed, deferred or unverified feedback, explain the disposition in the original thread and leave it open for follow-up.
+
+Open the PR **Checks** tab and choose **Oddmash Reviewer / review** for the current stage where review progress is enabled. Lead reports active coordinated specialists in the same check. Approval is the formal review outcome shown on the PR and depends on the current head, CI and review coverage.
 
 ## Phase 4: maintainer-only auto-merge
 
