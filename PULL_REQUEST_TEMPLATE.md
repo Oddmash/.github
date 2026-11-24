@@ -6,7 +6,7 @@ Open as ready for review by default. If a draft is necessary, explain why and wh
 
 Refs #
 
-Use `Refs #123` for an integration-branch PR or partial work. Use `Closes #123` only when the completed work merges into the repository's default branch. Cross-repository references may use `Refs owner/repo#123`. For a release PR, list the included issues.
+Use `Refs #123` for an integration-branch PR or partial work. Use `Closes #123` only when the completed work merges into the repository's default branch. Cross-repository references may use `Refs owner/repo#123`. For topic and synchronization PRs, link exactly one scoped issue. For a develop-to-default release PR, list each distinct included issue on its own line; a multi-issue release requires manual merge after CI and review.
 
 ## Summary
 

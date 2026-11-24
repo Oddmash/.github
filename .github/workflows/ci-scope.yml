@@ -99,6 +99,8 @@ jobs:
               });
               if (!filled) errors.push('Fill in the ' + heading + ' section; remove placeholders.');
             }
+            const releasePR = pr.head.repo?.id === pr.base.repo.id && pr.head.ref === 'develop' && pr.base.ref === pr.base.repo.default_branch;
+            const syncPR = pr.head.repo?.id === pr.base.repo.id && pr.head.ref === pr.base.repo.default_branch && pr.base.ref === 'develop';
             const references = [];
             const referencePattern = /^(?:[-*+]\s+)?(Refs|Closes)\s+((?:[a-z0-9_.-]+\/[a-z0-9_.-]+)?#([1-9]\d*))\.?$/i;
             for (const line of sections.get('Related issue') || []) {
@@ -110,6 +112,8 @@ jobs:
               references.push({ verb: match[1].toLowerCase(), repository: target.toLowerCase(), number: issueNumber });
             }
             if (!references.length) errors.push('Add a valid issue reference in Related issue, e.g. Refs #123 or Closes owner/repo#123.');
+            if (!releasePR && references.length > 1) errors.push('Use exactly one scoped issue reference for a topic or synchronization PR; only develop-to-default release PRs may list several.');
+            if (new Set(references.map(ref => ref.repository + '#' + ref.number)).size !== references.length) errors.push('List each linked issue once.');
             if (pr.base.ref !== pr.base.repo.default_branch && references.some(ref => ref.verb === 'closes')) errors.push('Use Refs for an integration branch; use Closes only for completed work on the default branch.');
             const local = (context.repo.owner + '/' + context.repo.repo).toLowerCase();
             const issueFormatSince = Date.parse('2026-11-24T08:31:35Z');
@@ -140,6 +144,10 @@ jobs:
                     (!/^(?:none|n\/a|not applicable)[.!]?$/i.test(value) || ['Impact and risks', 'Compatibility constraints', 'Scope and non-goals'].includes(field));
                 });
                 if (!filled) errors.push('A newly created local issue must fill its ' + field + ' field.');
+                if (field === 'Acceptance criteria' && filled) {
+                  const criteria = (parsed.sections.get(field) || []).filter(line => line.trim());
+                  if (!criteria.length || criteria.some(line => !/^\s*[-*+]\s+(?:\[[ xX]\]\s+)?\S/.test(line) || !/[\p{L}\p{N}]/u.test(normalize(line)) || /^(?:tbd|todo|placeholder|fill me in|none|n\/a|not applicable)[.!]?$/i.test(normalize(line)))) errors.push('Write measurable acceptance criteria as Markdown bullets or checkboxes.');
+                }
               }
             };
             for (const number of new Set(references.filter(ref => ref.repository === local).map(ref => ref.number))) {
@@ -153,7 +161,7 @@ jobs:
             }
             const maintainerTopic = pr.head.repo?.id === pr.base.repo.id &&
               ['OWNER', 'MEMBER', 'COLLABORATOR'].includes(pr.author_association) &&
-              !(pr.head.ref === 'develop' && pr.base.ref === pr.base.repo.default_branch);
+              !releasePR && !syncPR;
             if (maintainerTopic) {
               const commits = await github.paginate(github.rest.pulls.listCommits, { ...context.repo, pull_number: pr.number, per_page: 100 });
               if (commits.length !== pr.commits) errors.push('Could not verify every commit subject; split or inspect the topic branch.');
