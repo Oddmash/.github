@@ -2,15 +2,31 @@
 
 [English](../../profile/README.md) · [한국어](../ko/README.md) · [日本語](../ja/README.md) · **简体中文**
 
-Oddmash 是一家独立软件工作室，致力于开发开源开发工具、Web 产品和游戏。我们将明确的小想法转化为实用产品，改善日常开发体验。
+**Developer Experience Lab**
 
-**小工具，更流畅的开发体验。**
+Oddmash 是一家独立软件工作室，开发改善日常开发体验的开源工具。我们专注于界面实现、交互调试、代码结构管理和软件交付中反复出现的问题。
 
-## 公开项目
+[访问 Oddmash 网站](https://oddmash.github.io/oddmash-website/zh-cn/)
 
-- [Kowrap](https://github.com/Oddmash/kowrap): 适用于 Web 的自然韩语换行。
-- [Oddmash UI](https://github.com/Oddmash/oddmash-ui): 无障碍 React 组件与设计令牌。
-- [Interaction Inspector](https://github.com/Oddmash/interaction-inspector): 在 Chrome 中检查 DOM 事件及焦点。
-- [Boundra](https://github.com/Oddmash/boundra): 检查 TypeScript 的领域边界。
+## 开发工具
+
+| 项目 | 解决的问题 |
+| --- | --- |
+| [Juliya (Kowrap)](https://github.com/Oddmash/kowrap) | 保留现有 Kowrap 接口，改善韩语、英语、日语和简体中文的文本换行。 |
+| [Oddmash UI](https://github.com/Oddmash/oddmash-ui) | 利用无障碍组件与支持主题的设计令牌，构建一致的 React 界面。 |
+| [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) | 在 Chrome 中检查 DOM 事件、键盘焦点和主要 ARIA 状态。 |
+| [Boundra](https://github.com/Oddmash/boundra) | 定义 TypeScript 契约，并检测架构边界违规。 |
+
+## 可复用的开发技能
+
+[Oddmash Skills](https://github.com/Oddmash/oddmash-skills) 为开发者和编程智能体提供可复用的指导，涵盖产品规划、设计、无障碍、文档、工程、测试和交付。
+
+## 审查辅助智能体
+
+[Oddmash Agents](https://github.com/Oddmash/oddmash-agents) 通过面向拉取请求的专业审查角色补充开发指导。Lead 负责协调审查，专业角色评估变更影响、问题分类、测试、发布说明、文档和架构。CI 和维护者仍承担必需的检查与审批职责。
+
+## 开发方式
+
+从具体问题出发，实现有针对性的变更，并验证行为与无障碍表现。确认审查依据后，从获批的修订版本发布。工具、技能和智能体分别支持这一流程的不同环节。
 
 公开项目欢迎具体的问题报告及改进建议。请参阅[贡献指南](https://github.com/Oddmash/.github/blob/main/docs/zh-CN/CONTRIBUTING.md)。
