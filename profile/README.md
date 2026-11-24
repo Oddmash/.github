@@ -1,8 +1,8 @@
 # Oddmash
 
-**English** · [한국어](../docs/ko/README.md) · [日本語](../docs/ja/README.md) · [简体中文](../docs/zh-CN/README.md)
+**English** · [한국어](https://github.com/Oddmash/.github/blob/main/docs/ko/README.md) · [日本語](https://github.com/Oddmash/.github/blob/main/docs/ja/README.md) · [简体中文](https://github.com/Oddmash/.github/blob/main/docs/zh-CN/README.md)
 
-![Oddmash seven-agent family](../assets/agent-family.svg)
+![Oddmash seven-agent family](https://raw.githubusercontent.com/Oddmash/.github/main/assets/agent-family.svg)
 
 Oddmash is an independent, one-person software studio building developer tools and web experiences with seven specialized AI advisors. The maintainer owns product decisions and releases.
 
@@ -25,4 +25,4 @@ Reviewer runs automatically. Other roles respond to explicit maintainer requests
 - [Interaction Inspector](https://github.com/Oddmash/interaction-inspector): Inspect DOM events and keyboard focus in Chrome.
 - [Boundra](https://github.com/Oddmash/boundra): Enforce domain boundaries in TypeScript.
 
-Public projects welcome focused issue reports and concrete improvements. Read the [contribution guide](../CONTRIBUTING.md).
+Public projects welcome focused issue reports and concrete improvements. Read the [contribution guide](https://github.com/Oddmash/.github/blob/main/CONTRIBUTING.md).
