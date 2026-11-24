@@ -28,12 +28,13 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 - Keep secrets, signing material, private user data, and production-only values out of source, fixtures, logs, screenshots, prompts, and review comments.
 - Preserve existing URLs, release channels, package names, permissions, privacy boundaries, and deployment behavior unless the task explicitly authorizes a migration.
 
-## Internal JavaScript and TypeScript package management
+## Ecosystem-aware package management
 
-- Use `pnpm@11.25.0` as the exact internal package manager for active JavaScript and TypeScript projects. Declare it in `package.json#packageManager`, use the repository's compatible development Node.js version (Node.js 24 by default), and commit the reproducible `pnpm-lock.yaml` for each independent installation root.
-- Use frozen-lockfile installs in CI and deployment. Declare workspace membership and explicitly review any dependency build-script allowlist. Preserve dependency versions during a package-manager-only migration. Keep generated output, runtime engines, consumer package APIs and release contracts intact.
-- Use pnpm for repository scripts, tooling and contributor setup. npm registry publishing and external npm, Yarn and Bun consumer installation examples remain valid. Document genuinely incompatible tooling and historical release exceptions instead of silently changing behavior.
-- Change the shared pin through reviewed pull requests, verify each affected repository's installation, checks, build and release path, and preserve in-flight PRs.
+- Select the dependency manager appropriate to the repository's language, framework and existing tooling. Default to pnpm for JavaScript and TypeScript, Cargo for Rust, uv for new Python projects where compatible, Go Modules for Go, NuGet for .NET, and engine-native dependency management for Godot. These are defaults, not migration mandates. Document justified exceptions and do not introduce an unrelated tool solely for organizational consistency.
+- For JS/TS roots using pnpm, use the shared pin `pnpm@11.25.0` in `package.json#packageManager`, a compatible Node.js runtime (Node.js 24 by default), and a committed reproducible `pnpm-lock.yaml` for each independent installation root. Document incompatible tooling or legacy project exceptions with the selected version and verification evidence.
+- Declare the selected tool and version where supported. Commit ecosystem-appropriate lockfiles or equivalent reproducible dependency metadata; use locked or frozen installation in CI and deployment where supported. Keep workspace boundaries, cache keys, build-script permissions and release behavior consistent with that project.
+- For JS/TS projects using pnpm, use pnpm for internal scripts and contributor setup. Preserve npm registry publishing and external npm, Yarn and Bun consumer examples. Do not change consumer packages or release channels merely to standardize internal tooling.
+- Migrate only through focused reviewed pull requests. Preserve dependency versions, supported runtimes, generated-output boundaries and security permissions. Verify applicable install, lint, type, tests, build and non-publishing release checks; preserve in-flight PRs.
 
 ## Git and repository workflow
 
