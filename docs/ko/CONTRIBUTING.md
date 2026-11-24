@@ -34,7 +34,8 @@ JavaScript/TypeScript 저장소 내부에서는 `package.json`에 고정한 공�
 - CI 권한은 최소로 유지하고, 재사용 워크플로는 검토한 커밋에 고정합니다. 실행 환경, 브라우저나 엔진 설정, 배포 및 릴리스 검사는 각 제품 저장소가 관리합니다.
 - 제품별 UI와 시각 디자인 규칙은 해당 프로젝트에 둡니다. 둘 이상의 제품에서 같은 동작이 안정적으로 필요할 때만 토큰이나 컴포넌트를 공통 패키지로 올립니다.
 - 인증 정보, 서명 자료, 사용자 데이터, 운영 전용 값을 예시·픽스처·로그·스크린샷·프롬프트·리뷰 댓글에 넣지 않습니다.
-- AI 코드 리뷰는 참고 의견만 제공합니다. 저장소 `AGENTS.md`를 따르고 근거와 확신도를 표시하며, 중복 댓글을 피하고, 자동 승인·병합·배포·시크릿 변경을 하지 않습니다. [AI 코드 리뷰 계획](../AI-CODE-REVIEW.md)을 참고하세요.
+- 전문 에이전트는 참고 의견을 제공하고 Lead는 [조직 리뷰 정책](../AI-CODE-REVIEW.md)에 따라 공식 리뷰를 제출할 수 있습니다. 별도 병합 권한은 리뷰 권한과 구분됩니다. 첫 리뷰는 자동으로 실행되도록 두고, 승인된 수동 전체 리뷰 요청은 PR Conversation 댓글의 첫 빈칸이 아닌 줄에 `/review`만 작성하세요. 추가 설명은 다음 줄에 작성합니다. [명령어 표](https://github.com/Oddmash/oddmash-agents/blob/main/docs/agent-family.md#slash-commands)를 참고하세요.
+- 수정 후 검증했다면 원래 리뷰 스레드에 `Fixed in <full-current-head-sha>: <change and verification>`, 반영하지 않는다면 `Not adopted: <reason and evidence>`, 보류한다면 `Deferred: <reason and linked issue>` 형식으로 답변하세요. 실제 수정하지 않은 내용을 수정했다고 쓰지 마세요. 검증 또는 권한 있는 관리자의 명시적 결정 이후 Resolve하고, 미해결 사항은 열린 상태로 두세요. 실제 스레드 상태를 확인하세요. Resolve는 CI 통과나 승인을 대신하지 않습니다. [리뷰 후속 처리](../AI-CODE-REVIEW.md#following-up-on-review-findings)를 참고하세요.
 
 ## 풀 리퀘스트 제출
 

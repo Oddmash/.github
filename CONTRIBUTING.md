@@ -42,7 +42,8 @@ Use `.github/workflows/node-ci.yml` for repositories whose checks run through `p
 - Keep CI permissions minimal and pin reusable workflows to a reviewed commit. Product repositories own their runtime matrix, browser or engine setup, deployment, and release checks.
 - Keep product-specific UI and visual rules in the project. Promote tokens or components to a shared package only after more than one product needs the same stable behavior.
 - Never put credentials, signing material, user data, or production-only values in examples, fixtures, logs, screenshots, prompts, or review comments.
-- AI-assisted review is advisory. It must follow the repository's `AGENTS.md`, report evidence and confidence, avoid duplicate comments, and never approve, merge, publish, or change secrets automatically. See the [AI code review plan](docs/AI-CODE-REVIEW.md).
+- Specialist reviews are advisory; Lead may issue a formal review under the [organization review policy](docs/AI-CODE-REVIEW.md). A separate authorized merge gate is not review authority. Let the initial review run automatically. For an authorized manual full review, use `/review` alone on the first non-empty line of a PR Conversation comment; optional context follows on later lines. See the [command table](https://github.com/Oddmash/oddmash-agents/blob/main/docs/agent-family.md#slash-commands).
+- Reply in the original review thread with `Fixed in <full-current-head-sha>: <change and verification>` after a verified fix, `Not adopted: <reason and evidence>` when declining, or `Deferred: <reason and linked issue>` when postponing. Never claim an unmade fix. Resolve after verification or an explicit authorized maintainer decision; otherwise leave outstanding findings open. Check the actual thread state. Resolution is not CI success or approval. See [review follow-up](docs/AI-CODE-REVIEW.md#following-up-on-review-findings).
 
 ## Submit a pull request
 
