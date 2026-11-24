@@ -2,7 +2,7 @@
 
 **English** · [한국어](https://github.com/Oddmash/.github/blob/main/docs/ko/README.md) · [日本語](https://github.com/Oddmash/.github/blob/main/docs/ja/README.md) · [简体中文](https://github.com/Oddmash/.github/blob/main/docs/zh-CN/README.md)
 
-![Oddmash seven-agent family](https://raw.githubusercontent.com/Oddmash/.github/main/assets/agent-family.svg)
+![Oddmash studio banner showing seven agent role cards: Reviewer, Impact, Triage, QA, Release, Docs, and Architect](https://raw.githubusercontent.com/Oddmash/.github/main/assets/agent-family.svg)
 
 Oddmash is an independent, one-person software studio building developer tools and web experiences with seven specialized AI advisors. The maintainer owns product decisions and releases.
 
