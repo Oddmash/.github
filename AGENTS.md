@@ -51,11 +51,11 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 ## Agent contribution attribution
 
-Credit each Oddmash agent whose verified review or advisory materially contributes to a commit. Add one Git `Co-authored-by` trailer per actual attributed GitHub account after a blank line at the end of the commit message. Use the authenticated source comment or review author's identity, not merely the role named in its text. Record the source role or discussion in the commit body or PR evidence when coordinated advice is posted by Reviewer instead of a dedicated role account. Deduplicate trailers by account; do not credit an agent merely for running, approving, or producing an unused recommendation. Preserve human authorship and do not rewrite previously published history.
+Credit each Oddmash agent whose verified review or advisory materially contributes to a commit. Add one Git `Co-authored-by` trailer per actual attributed GitHub account after a blank line at the end of the commit message. Use the authenticated source comment or review author's identity, not merely the role named in its text. Record the source role or discussion in the commit body or PR evidence when coordinated advice is posted by Lead (formerly Reviewer) instead of a dedicated role account. Deduplicate trailers by account; do not credit an agent merely for running, approving, or producing an unused recommendation. Preserve human authorship and do not rewrite previously published history.
 
 | Agent account | Verified Git trailer |
 | --- | --- |
-| Reviewer | `Co-authored-by: oddmash-reviewer[bot] <360059368+oddmash-reviewer[bot]@users.noreply.github.com>` |
+| Lead (formerly Reviewer; current authenticated account) | `Co-authored-by: oddmash-reviewer[bot] <360059368+oddmash-reviewer[bot]@users.noreply.github.com>` |
 | Impact | `Co-authored-by: oddmash-impact[bot] <360494540+oddmash-impact[bot]@users.noreply.github.com>` |
 | Triage | `Co-authored-by: oddmash-triage[bot] <360494678+oddmash-triage[bot]@users.noreply.github.com>` |
 | QA | `Co-authored-by: oddmash-qa[bot] <360494749+oddmash-qa[bot]@users.noreply.github.com>` |
@@ -63,7 +63,7 @@ Credit each Oddmash agent whose verified review or advisory materially contribut
 | Docs | `Co-authored-by: oddmash-docs[bot] <360494869+oddmash-docs[bot]@users.noreply.github.com>` |
 | Architect | `Co-authored-by: oddmash-architect[bot] <360494928+oddmash-architect[bot]@users.noreply.github.com>` |
 
-For any renamed or newly configured bot, verify its actual GitHub account and no-reply identity before changing the registered trailer. Attribution does not grant approval, execution, merge, or deployment authority.
+Lead is the display role; until the actual App identity migration is verified, its canonical GitHub login and trailer remain unchanged. For any renamed or newly configured bot, verify its actual authenticated GitHub account and no-reply identity before changing the registered trailer. Do not rewrite historical commits. Attribution does not grant approval, execution, merge, or deployment authority.
 
 ## UI and design
 
@@ -76,7 +76,7 @@ For any renamed or newly configured bot, verify its actual GitHub account and no
 
 ## Collaboration and AI review
 
-- Use the canonical GitHub mention `@oddmash-reviewer[bot]` in review discussions and explicit review commands; do not use the shorter alias in new comments. Follow the existing scoped-verification and review-request rules.
+- Use the canonical GitHub mention `@oddmash-reviewer[bot]` (Lead's current authenticated account) in review discussions and explicit review commands; do not use the shorter alias in new comments. Follow the existing scoped-verification and review-request rules.
 
 - Use English for issue and pull request titles, bodies, public review discussions, contribution templates, commit messages, and changelog entries in all public repositories. Product READMEs and user-facing documentation retain their existing localization policies. Provide translation help when needed; do not rewrite historical contributions.
 
