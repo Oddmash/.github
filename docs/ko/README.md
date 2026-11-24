@@ -25,4 +25,4 @@ Reviewer만 자동 실행합니다. 다른 역할은 메인테이너의 명시�
 - [Interaction Inspector](https://github.com/Oddmash/interaction-inspector): Chrome의 DOM 이벤트 및 키보드 포커스 검사.
 - [Boundra](https://github.com/Oddmash/boundra): TypeScript 도메인 경계 검사.
 
-공개 프로젝트에는 구체적인 문제 제보와 개선 제안을 환영합니다. [기여 가이드](CONTRIBUTING.md)를 확인해 주세요.
+공개 프로젝트에는 구체적인 문제 제보와 개선 제안을 환영합니다. [기여 가이드](https://github.com/Oddmash/.github/blob/main/docs/ko/CONTRIBUTING.md)를 확인해 주세요.
