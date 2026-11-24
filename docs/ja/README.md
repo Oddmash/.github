@@ -23,7 +23,7 @@ Oddmash は、日々の開発体験を改善するオープンソースツール
 
 ## レビューを支援するエージェント
 
-[Oddmash Agents](https://github.com/Oddmash/oddmash-agents) は、プルリクエストの専門的なレビューによって開発ガイドを補完します。Lead がレビューを調整し、専門エージェントが変更の影響、トリアージ、テスト、リリースノート、ドキュメント、アーキテクチャを評価します。必須チェックと承認の責任は CI とメンテナーにあります。
+[Oddmash Agents](https://github.com/Oddmash/oddmash-agents) は、専門的な助言によって開発ガイドを補完します。Lead が正式なプルリクエストレビューを調整します。他のエージェントは依頼に応じて助言を行い、Impact、QA、Release、Docs、Architect は各専門領域を評価し、Triage はイシューの分類と優先順位付けを担当します。必須チェックと承認の責任は CI とメンテナーにあります。
 
 ## 開発の進め方
 
