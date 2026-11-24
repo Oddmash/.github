@@ -1,6 +1,7 @@
 ---
 name: Test
 about: Improve test coverage and verification
+labels: 'type: test'
 ---
 
 ## Behavior to verify
