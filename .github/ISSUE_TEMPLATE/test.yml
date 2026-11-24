@@ -1,0 +1,32 @@
+name: "Test"
+description: "Improve test coverage and verification"
+labels: ["type: test"]
+body:
+  - type: textarea
+    id: behavior-to-verify
+    attributes:
+      label: "Behavior to verify"
+      description: "Describe the behavior contract."
+    validations:
+      required: true
+  - type: textarea
+    id: test-gap
+    attributes:
+      label: "Test gap"
+      description: "Explain which verification is missing."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-scenarios
+    attributes:
+      label: "Proposed scenarios"
+      description: "List the test scenarios."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "Acceptance criteria"
+      description: "Include reproducible tests or verification evidence."
+    validations:
+      required: true

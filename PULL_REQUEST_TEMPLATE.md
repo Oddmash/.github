@@ -1,12 +1,12 @@
-Write the title and description in English. Link the related issue before requesting review.
+Write the title and description in English. Use a type-prefixed title, such as `fix: clarify focus`. Complete every heading before requesting review and remove instructional placeholders.
 
 Open as ready for review by default. If a draft is necessary, explain why and what must change before marking it ready. Pending remote CI or review alone is not a draft reason.
 
 ## Related issue
 
-Closes #
+Refs #
 
-Use `Refs #` instead if this PR only covers part of the issue. For a release PR, list the included issues.
+Use `Refs #123` for an integration-branch PR or partial work. Use `Closes #123` only when the completed work merges into the repository's default branch. Cross-repository references may use `Refs owner/repo#123`. For a release PR, list the included issues.
 
 ## Summary
 

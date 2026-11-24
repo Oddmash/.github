@@ -1,0 +1,32 @@
+name: "Fix plan"
+description: "Plan a confirmed bug fix"
+labels: ["type: fix"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem"
+      description: "Describe the confirmed problem and link the reported issue if available."
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: "Scope"
+      description: "Describe what will be changed."
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: "Expected behavior"
+      description: "Explain the corrected behavior."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "Acceptance criteria"
+      description: "Include regression coverage and verification of existing behavior."
+    validations:
+      required: true

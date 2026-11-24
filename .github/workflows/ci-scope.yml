@@ -24,6 +24,8 @@ on:
         value: ${{ jobs.scope.outputs.workflow }}
 permissions:
   contents: read
+  issues: read
+  pull-requests: read
 jobs:
   scope:
     runs-on: ubuntu-24.04
@@ -38,6 +40,131 @@ jobs:
       react18: ${{ steps.scope.outputs.react18 }}
       workflow: ${{ steps.scope.outputs.workflow }}
     steps:
+      - name: Validate contribution metadata
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        with:
+          script: |
+            const pr = (await github.rest.pulls.get({ ...context.repo, pull_number: context.payload.pull_request.number })).data;
+            if (pr.head.sha !== context.payload.pull_request.head.sha) {
+              core.setFailed('PR head changed; wait for the current revision check.');
+              return;
+            }
+            const errors = [];
+            const titlePattern = /^(?:feat|feature|fix|bug|docs|refactor|test|chore|ci|build|perf|improvement|style|revert|release|design|deps)(?:\([a-z0-9][a-z0-9/-]*\))?!?: \S.+$/u;
+            if (!titlePattern.test(pr.title)) errors.push('Use a type-prefixed title, e.g. fix: clarify focus behavior.');
+            const expected = ['Related issue', 'Summary', 'Verification', 'Product and design impact', 'Permissions and data'];
+            const readSections = (body, expected, issue = false) => {
+              const sections = new Map();
+              const order = [];
+              const lines = (body || '').replace(/<!--[\s\S]*?(?:-->|$)/g, '').split(/\r?\n/);
+              let section = null;
+              let fence = null;
+              for (const line of lines) {
+                const marker = /^\s{0,3}(\x60{3,}|~{3,})/.exec(line);
+                if (marker) {
+                  if (!fence) fence = marker[1];
+                  else if (marker[1][0] === fence[0] && marker[1].length >= fence.length && new RegExp('^\\s{0,3}' + fence[0] + '{' + fence.length + ',}\\s*$').test(line)) fence = null;
+                  continue;
+                }
+                if (fence) continue;
+                const heading = (issue ? /^#{2,3} ([^#]+?)\s*$/ : /^## ([^#]+?)\s*$/).exec(line);
+                if (heading) {
+                  section = heading[1].trim();
+                  if (expected.includes(section)) order.push(section);
+                  if (!sections.has(section)) sections.set(section, []);
+                  continue;
+                }
+                if (section !== null) sections.get(section).push(line);
+              }
+              return { sections, order };
+            };
+            const { sections, order } = readSections(pr.body, expected);
+            if (order.join('|') !== expected.join('|')) errors.push('Use each required ## heading once, in template order: ' + expected.join(', ') + '.');
+            const prompts = new Set([
+              'what changed and why?',
+              'list the actual commands or checks run and their results. note checks not run and why.',
+              'which \x60agents.md\x60 and project-specific guidance did you follow?',
+              'describe user-facing behavior, screenshots or gameplay captures, localization, accessibility, and project-specific ui/design-rule impact. write “none” when not applicable.',
+              'describe any change to permissions, captured fields, deployment, releases, or secrets. use synthetic values in examples.'
+            ]);
+            const normalize = line => line.trim().replace(/^[-*+]\s+(?:\[[ xX]\]\s*)?/, '').replace(/^\d+\.\s+/, '').trim().toLowerCase();
+            for (const heading of expected.slice(1)) {
+              const nullable = heading === 'Product and design impact' || heading === 'Permissions and data';
+              const filled = (sections.get(heading) || []).some(line => {
+                const value = normalize(line);
+                if (!/[\p{L}\p{N}]/u.test(value) || prompts.has(value) || /^(?:tbd|todo|placeholder|fill me in)[.!]?$/i.test(value)) return false;
+                if (!nullable && /^(?:none|n\/a|not applicable|tested|pass(?:ed)?|no changes)[.!]?$/i.test(value)) return false;
+                return true;
+              });
+              if (!filled) errors.push('Fill in the ' + heading + ' section; remove placeholders.');
+            }
+            const references = [];
+            const referencePattern = /^(?:[-*+]\s+)?(Refs|Closes)\s+((?:[a-z0-9_.-]+\/[a-z0-9_.-]+)?#([1-9]\d*))\.?$/i;
+            for (const line of sections.get('Related issue') || []) {
+              const match = referencePattern.exec(line.trim());
+              if (!match) continue;
+              const issueNumber = Number(match[3]);
+              if (!Number.isSafeInteger(issueNumber)) continue;
+              const target = match[2].split('#')[0] || context.repo.owner + '/' + context.repo.repo;
+              references.push({ verb: match[1].toLowerCase(), repository: target.toLowerCase(), number: issueNumber });
+            }
+            if (!references.length) errors.push('Add a valid issue reference in Related issue, e.g. Refs #123 or Closes owner/repo#123.');
+            if (pr.base.ref !== pr.base.repo.default_branch && references.some(ref => ref.verb === 'closes')) errors.push('Use Refs for an integration branch; use Closes only for completed work on the default branch.');
+            const local = (context.repo.owner + '/' + context.repo.repo).toLowerCase();
+            const issueFormatSince = Date.parse('2026-11-24T08:31:35Z');
+            const issueFields = {
+              'type: bug': ['Expected behavior', 'Observed behavior', 'Reproduction steps', 'Environment'],
+              'type: chore': ['Context', 'Proposed maintenance', 'Impact and risks', 'Acceptance criteria'],
+              'type: documentation': ['Documentation affected', 'Current gap', 'Proposed changes', 'Acceptance criteria'],
+              'type: feature': ['Problem or opportunity', 'Proposed feature', 'Use cases', 'Scope and non-goals', 'Acceptance criteria'],
+              'type: fix': ['Problem', 'Scope', 'Expected behavior', 'Acceptance criteria'],
+              'type: improvement': ['Current behavior', 'Proposed improvement', 'Expected benefits', 'Acceptance criteria'],
+              'type: refactor': ['Current implementation', 'Motivation', 'Proposed approach', 'Compatibility constraints', 'Acceptance criteria'],
+              'type: test': ['Behavior to verify', 'Test gap', 'Proposed scenarios', 'Acceptance criteria']
+            };
+            const validateIssue = issue => {
+              if (Date.parse(issue.created_at) < issueFormatSince || !issue.created_at) return;
+              const types = (issue.labels || []).map(label => typeof label === 'string' ? label : label.name)
+                .filter(label => Object.hasOwn(issueFields, label));
+              if (types.length !== 1) {
+                errors.push('A newly created local issue needs exactly one supported issue-form type label.');
+                return;
+              }
+              const fields = issueFields[types[0]];
+              const parsed = readSections(issue.body, fields, true);
+              for (const field of fields) {
+                const filled = (parsed.sections.get(field) || []).some(line => {
+                  const value = normalize(line);
+                  return /[\p{L}\p{N}]/u.test(value) && !/^(?:tbd|todo|placeholder|fill me in|_no response_)[.!]?$/i.test(value) &&
+                    (!/^(?:none|n\/a|not applicable)[.!]?$/i.test(value) || ['Impact and risks', 'Compatibility constraints', 'Scope and non-goals'].includes(field));
+                });
+                if (!filled) errors.push('A newly created local issue must fill its ' + field + ' field.');
+              }
+            };
+            for (const number of new Set(references.filter(ref => ref.repository === local).map(ref => ref.number))) {
+              try {
+                const issue = (await github.rest.issues.get({ ...context.repo, issue_number: number })).data;
+                if (issue.pull_request) errors.push('A local reference targets a pull request, not an issue.');
+                else validateIssue(issue);
+              } catch {
+                errors.push('A local issue reference could not be verified. Check the issue number and read permission.');
+              }
+            }
+            const maintainerTopic = pr.head.repo?.id === pr.base.repo.id &&
+              ['OWNER', 'MEMBER', 'COLLABORATOR'].includes(pr.author_association) &&
+              !(pr.head.ref === 'develop' && pr.base.ref === pr.base.repo.default_branch);
+            if (maintainerTopic) {
+              const commits = await github.paginate(github.rest.pulls.listCommits, { ...context.repo, pull_number: pr.number, per_page: 100 });
+              if (commits.length !== pr.commits) errors.push('Could not verify every commit subject; split or inspect the topic branch.');
+              for (const [index, commit] of commits.entries()) {
+                if (commit.parents.length > 1) continue;
+                const subject = commit.commit.message.split(/\r?\n/)[0];
+                if (!titlePattern.test(subject) && !/^Revert ".+"$/u.test(subject)) errors.push('Commit ' + (index + 1) + ' needs a type-prefixed subject.');
+              }
+            }
+            if (errors.length) core.setFailed(errors.join('\n'));
+            else core.info('Contribution metadata meets the structural checks. Verification evidence still requires review.');
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
           fetch-depth: 0
