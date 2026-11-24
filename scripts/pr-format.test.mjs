@@ -141,3 +141,31 @@ test('legacy local issues remain linkable without retroactive format enforcement
   const result = await check(makePr(), { issue: { created_at: '2026-11-24T08:31:34Z', labels: [], body: 'Legacy issue.' } });
   assert.deepEqual(result.failures, []);
 });
+
+test('topic PRs require a single issue and release links may not repeat an issue', async () => {
+  const topic = await check(makePr({ body: body.replace('Refs #123', 'Refs #123\nRefs #124') }));
+  assert.match(topic.failures.join(' '), /exactly one scoped issue reference/);
+  const duplicate = await check(makePr({
+    body: body.replace('Refs #123', 'Closes #123\nRefs #123'),
+    head: { ref: 'develop', sha: 'head', repo: { id: 1 } },
+    base: { ref: 'main', repo: { id: 1, default_branch: 'main' } }
+  }));
+  assert.match(duplicate.failures.join(' '), /List each linked issue once/);
+});
+
+test('default branch synchronization preserves historical commit subjects', async () => {
+  const result = await check(makePr({ head: { ref: 'main', sha: 'head', repo: { id: 1 } } }), { commits: [commit('historical subject')] });
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.commitCalls, 0);
+});
+
+test('acceptance criteria support ordinary bullets and checkboxes but reject prose and empty items', async () => {
+  const prefix = '### Context\nMaintain CI.\n### Proposed maintenance\nAdd checks.\n### Impact and risks\nNone.\n### Acceptance criteria\n';
+  const issue = { created_at: '2026-11-25T00:00:00Z', labels: [{ name: 'type: chore' }] };
+  const good = await check(makePr(), { issue: { ...issue, body: prefix + '- Existing tests pass.\n- [ ] New checks pass.' } });
+  assert.deepEqual(good.failures, []);
+  const bad = await check(makePr(), { issue: { ...issue, body: prefix + 'Existing tests pass.' } });
+  assert.match(bad.failures.join(' '), /Markdown bullets or checkboxes/);
+  const empty = await check(makePr(), { issue: { ...issue, body: prefix + '- Existing tests pass.\n- [ ]' } });
+  assert.match(empty.failures.join(' '), /Markdown bullets or checkboxes/);
+});
