@@ -28,6 +28,13 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 - Keep secrets, signing material, private user data, and production-only values out of source, fixtures, logs, screenshots, prompts, and review comments.
 - Preserve existing URLs, release channels, package names, permissions, privacy boundaries, and deployment behavior unless the task explicitly authorizes a migration.
 
+## Internal JavaScript and TypeScript package management
+
+- Use `pnpm@11.25.0` as the exact internal package manager for active JavaScript and TypeScript projects. Declare it in `package.json#packageManager`, use the repository's compatible development Node.js version (Node.js 24 by default), and commit the reproducible `pnpm-lock.yaml` for each independent installation root.
+- Use frozen-lockfile installs in CI and deployment. Declare workspace membership and explicitly review any dependency build-script allowlist. Preserve dependency versions during a package-manager-only migration. Keep generated output, runtime engines, consumer package APIs and release contracts intact.
+- Use pnpm for repository scripts, tooling and contributor setup. npm registry publishing and external npm, Yarn and Bun consumer installation examples remain valid. Document genuinely incompatible tooling and historical release exceptions instead of silently changing behavior.
+- Change the shared pin through reviewed pull requests, verify each affected repository's installation, checks, build and release path, and preserve in-flight PRs.
+
 ## Git and repository workflow
 
 - Verify repository identity, remote, base revision, branch and existing changes before editing. Preserve user work and contributor authorship. Use focused branches and follow local naming conventions; absent one, prefer `feat/`, `fix/`, `docs/`, `refactor/`, `test/` or `chore/` with a descriptive slug.
