@@ -26,6 +26,8 @@ Oddmash 是由个人运营的独立软件工作室。公开仓库欢迎范围明
 
 共用 Node CI 的使用方式请参阅[英文贡献指南](../../CONTRIBUTING.md#shared-node-checks)。
 
+JavaScript/TypeScript 仓库内部使用 `package.json` 中固定的统一 pnpm 版本及 `pnpm-lock.yaml`。CI 通过 `pnpm install --frozen-lockfile` 安装依赖。保留 npm 注册表发布和面向外部使用者的 npm、Yarn、Bun 安装说明。
+
 ## 通用开发基线
 
 - 将仓库特定的工作约定放在根目录 `AGENTS.md`。从[组织通用基线](../../AGENTS.md)开始，只添加产品、隐私、发布、引擎、UI 与设计实际需要的规则。

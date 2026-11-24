@@ -26,6 +26,8 @@ Oddmash는 1인 독립 소프트웨어 스튜디오입니다. 공개 저장소�
 
 공통 Node CI 사용법은 [영문 기여 안내의 공통 Node 검사](../../CONTRIBUTING.md#shared-node-checks)를 참고하세요.
 
+JavaScript/TypeScript 저장소 내부에서는 `package.json`에 고정한 공통 pnpm 버전과 `pnpm-lock.yaml`을 사용합니다. CI에서는 `pnpm install --frozen-lockfile`로 설치합니다. 공개 npm 배포 및 외부 사용자의 npm, Yarn, Bun 설치 안내는 유지합니다.
+
 ## 공통 개발 기준
 
 - 저장소별 작업 기준은 루트 `AGENTS.md`에 둡니다. [조직 공통 기준](../../AGENTS.md)에서 시작하되 제품·개인정보·릴리스·엔진·UI·디자인에 실제로 필요한 규칙만 추가합니다.

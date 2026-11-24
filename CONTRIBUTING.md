@@ -14,7 +14,7 @@ Use English for issue and pull request titles, bodies, public review discussions
 
 Select one issue type from the shared template chooser: `type: bug`, `type: fix`, `type: feature`, `type: improvement`, `type: documentation`, `type: refactor`, `type: test`, or `type: chore`. Add relevant `area:` labels for filtering. Preserve project-specific labels; use `good first issue` only when intentionally inviting first-time contributors. Existing PR classification retains its legacy `type: bug` and `type: docs` labels.
 
-The shared [issue label catalog](.github/workflows/oddmash-issue-labels.yml) creates or updates only its managed labels. Each repository calls the reusable workflow with `issues: write` and a reviewed immutable commit reference. The caller runs after adding or updating it on `develop` or `main`, and can also run manually when needed. It does not change issue assignments, reviewer labels, merge settings, or permissions beyond the caller's repository scope.
+The shared [issue label catalog](.github/workflows/oddmash-issue-labels.yml) creates or updates only its managed labels. Each repository calls the reusable workflow with `issues: write` and a reviewed immutable commit reference. The caller runs after adding or updating it on the repository's approved integration or main branch, and can also run manually when needed. It does not change issue assignments, reviewer labels, merge settings, or permissions beyond the caller's repository scope.
 
 ## Report a problem
 
@@ -34,7 +34,7 @@ Open an issue first for a new feature or a change that affects several parts of 
 
 ## Shared Node checks
 
-Use `.github/workflows/node-ci.yml` for repositories whose checks run through `npm run ci` after `npm ci`. Call `Oddmash/.github/.github/workflows/node-ci.yml@<commit-sha>` from a job with `contents: read`. The caller owns its triggers. Set `working-directory` when the npm project is below the repository root and keep a committed lockfile there. `node-version` defaults to 24 and `ignore-install-scripts` defaults to false. Keep workflows with their own browser setup or compatibility matrix in the product repository.
+Use `.github/workflows/node-ci.yml` for repositories whose checks run through `pnpm run ci` after `pnpm install --frozen-lockfile`. Call `Oddmash/.github/.github/workflows/node-ci.yml@<commit-sha>` from a job with `contents: read`. The caller owns its triggers. Set `working-directory` when the independent pnpm project is below the repository root and commit its `package.json` with the shared `packageManager` pin and `pnpm-lock.yaml` there. `node-version` defaults to 24 and `ignore-install-scripts` defaults to false. Keep workflows with their own browser setup or compatibility matrix in the product repository. Existing pinned callers must migrate through separate reviewed PRs; consumer installation and npm registry publication are not affected.
 
 ## Shared development baseline
 

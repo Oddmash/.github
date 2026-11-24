@@ -2,8 +2,10 @@ name: Oddmash issue label catalog
 on:
   workflow_call:
   workflow_dispatch:
+  schedule:
+    - cron: '17 2 * * 1'
   push:
-    branches: [develop, main]
+    branches: [main]
     paths:
       - '.github/workflows/oddmash-issue-labels.yml'
 permissions:
