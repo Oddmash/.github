@@ -10,6 +10,12 @@ Oddmash is a one-person independent software studio. Public repositories welcome
 
 Use English for issue and pull request titles, bodies, public review discussions, contribution templates, commit messages, and changelog entries in all public repositories. Product READMEs and user-facing documentation retain their existing localization policies. Provide translation help when needed; do not rewrite historical contributions.
 
+## Issue labels
+
+Select one issue type from the shared template chooser: `type: bug`, `type: fix`, `type: feature`, `type: improvement`, `type: documentation`, `type: refactor`, `type: test`, or `type: chore`. Add relevant `area:` labels for filtering. Preserve project-specific labels; use `good first issue` only when intentionally inviting first-time contributors. Existing PR classification retains its legacy `type: bug` and `type: docs` labels.
+
+The shared [issue label catalog](.github/workflows/oddmash-issue-labels.yml) creates or updates only its managed labels. Each repository calls the reusable workflow with `issues: write` and a reviewed immutable commit reference. Run it after adding or updating the caller and manually when needed. It does not change issue assignments, reviewer labels, merge settings, or permissions beyond the caller's repository scope.
+
 ## Report a problem
 
 Open an issue in the relevant project. Describe what you expected, what happened, and how to reproduce it. Include the project version and relevant environment details. Use public or local fixtures with synthetic values. Remove credentials, private page contents, and personal data from logs and screenshots.
@@ -41,6 +47,6 @@ Use `.github/workflows/node-ci.yml` for repositories whose checks run through `n
 ## Submit a pull request
 
 - Open PRs as ready for review by default, even while remote CI or review is pending. Reserve drafts for an explicit request, materially incomplete implementation, or missing essential evidence that makes review misleading; state the reason and mark ready when resolved.
-- Keep changes focused and link the related issue when one exists.
+- Keep changes focused and link the related issue. Use `Closes #` for completed work or `Refs #` for partial work; list included issues in release PRs.
 - Follow the project's `CONTRIBUTING.md` for setup and checks. Include the results in your pull request.
 - Explain changes to permissions, captured data, public APIs, deployment, or release behavior.
