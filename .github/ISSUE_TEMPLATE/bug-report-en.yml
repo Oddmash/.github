@@ -1,0 +1,39 @@
+name: "Bug report"
+description: "Report a reproducible issue with an Oddmash project"
+labels: ["type: bug"]
+body:
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: "Expected behavior"
+      description: "Describe the expected result."
+    validations:
+      required: true
+  - type: textarea
+    id: observed-behavior
+    attributes:
+      label: "Observed behavior"
+      description: "Describe what actually happened."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: "Reproduction steps"
+      description: "Use a public or local fixture and synthetic values. Remove private page contents and credentials."
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: "Environment"
+      description: "Include the project version, browser/runtime and operating system."
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context"
+      description: "Optional logs, screenshots or context. Do not include sensitive information."
+    validations:
+      required: false
