@@ -1,0 +1,39 @@
+name: "Refactor"
+description: "Improve implementation without changing public behavior"
+labels: ["type: refactor"]
+body:
+  - type: textarea
+    id: current-implementation
+    attributes:
+      label: "Current implementation"
+      description: "Describe the existing implementation."
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "Motivation"
+      description: "Explain why a refactor is needed."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-approach
+    attributes:
+      label: "Proposed approach"
+      description: "Describe the implementation approach."
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility-constraints
+    attributes:
+      label: "Compatibility constraints"
+      description: "Describe APIs and behavior that must remain compatible."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "Acceptance criteria"
+      description: "Include public behavior/API preservation and regression checks."
+    validations:
+      required: true

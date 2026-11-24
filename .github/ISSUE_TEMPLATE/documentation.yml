@@ -1,0 +1,32 @@
+name: "Documentation"
+description: "Improve product or contributor documentation"
+labels: ["type: documentation"]
+body:
+  - type: textarea
+    id: documentation-affected
+    attributes:
+      label: "Documentation affected"
+      description: "Identify the affected files or pages."
+    validations:
+      required: true
+  - type: textarea
+    id: current-gap
+    attributes:
+      label: "Current gap"
+      description: "Explain what is missing or inaccurate."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-changes
+    attributes:
+      label: "Proposed changes"
+      description: "Describe the documentation changes."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "Acceptance criteria"
+      description: "Include example and link verification and relevant product translation updates."
+    validations:
+      required: true

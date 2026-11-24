@@ -1,0 +1,32 @@
+name: "Chore"
+description: "Maintain tooling, dependencies, or project infrastructure"
+labels: ["type: chore"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: "Context"
+      description: "Describe the maintenance need."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-maintenance
+    attributes:
+      label: "Proposed maintenance"
+      description: "Describe the work to be done."
+    validations:
+      required: true
+  - type: textarea
+    id: impact-and-risks
+    attributes:
+      label: "Impact and risks"
+      description: "Explain likely impact and risks, or state None."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "Acceptance criteria"
+      description: "List measurable completion criteria."
+    validations:
+      required: true
