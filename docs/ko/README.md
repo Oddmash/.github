@@ -23,7 +23,7 @@ Oddmash는 일상적인 개발 경험을 개선하는 오픈소스 도구를 만
 
 ## 검토를 지원하는 에이전트
 
-[Oddmash Agents](https://github.com/Oddmash/oddmash-agents)는 PR 검토에 특화된 역할로 개발 지침을 보완합니다. Lead는 검토를 조율하고, 전문 역할은 변경 영향, 이슈 분류, 테스트, 릴리스 노트, 문서와 아키텍처를 살핍니다. 필수 검사와 승인 책임은 CI와 유지보수자에게 있습니다.
+[Oddmash Agents](https://github.com/Oddmash/oddmash-agents)는 전문 분야별 자문 역할로 개발 지침을 보완합니다. Lead가 공식 PR 검토를 조율합니다. 다른 에이전트는 요청에 따라 자문합니다. Impact, QA, Release, Docs, Architect는 각 전문 영역을 검토하고 Triage는 이슈 분류와 우선순위 지정에 집중합니다. 필수 검사와 승인 책임은 CI와 유지보수자에게 있습니다.
 
 ## 개발 방식
 
