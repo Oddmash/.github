@@ -1,6 +1,7 @@
 ---
 name: Refactor
 about: Improve implementation without changing public behavior
+labels: 'type: refactor'
 ---
 
 ## Current implementation
