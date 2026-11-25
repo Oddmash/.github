@@ -93,3 +93,7 @@ None.
 Use `Refs #123` when targeting `develop` or doing partial work. Use `Closes #123` only when the completed work merges into the default branch. The reference belongs under Related issue.
 
 If CI reports a failure in `scope / scope` at **Validate contribution metadata**, inspect its log for missing headings or issue references and edit the PR description. This is separate from test failures. Editing the description triggers a new CI run in repositories using the current shared workflow. For external forks, a maintainer may need to approve the new workflow run before checks execute.
+
+## Release notes
+
+Follow the [organization release note format](docs/release-notes.md) for GitHub Releases. Product-specific release and publishing requirements still apply.
