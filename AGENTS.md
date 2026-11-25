@@ -24,7 +24,7 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 - Keep changes focused, reversible, and covered by the checks appropriate to the affected product.
 - Use the package manager, lockfile, runtime, engine, and generated-file boundaries declared by the repository. Do not introduce a shared stack merely for organizational consistency.
-- Give CI and deployment workflows the minimum permissions they need. Pin reusable cross-repository workflows to a reviewed commit.
+- Give CI and deployment workflows the minimum permissions they need. Pin external reusable workflows to reviewed commits. The organization-owned CI scope uses the stable `ci-v1` release branch; promote only approved commits from `main` after successful CI and independent review, via fast-forward updates. Never point it at unreviewed work or change required check contracts within v1.
 - Keep secrets, signing material, private user data, and production-only values out of source, fixtures, logs, screenshots, prompts, and review comments.
 - Preserve existing URLs, release channels, package names, permissions, privacy boundaries, and deployment behavior unless the task explicitly authorizes a migration.
 
