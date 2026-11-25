@@ -12,7 +12,7 @@ Oddmash is an independent software studio building open-source tools for a bette
 
 | Project | What it helps you do |
 | --- | --- |
-| [Juliya (Kowrap)](https://github.com/Oddmash/kowrap) | Improve text wrapping for Korean, English, Japanese and Simplified Chinese while preserving the existing Kowrap interface. |
+| [Juliya](https://github.com/Oddmash/juliya) | Improve text wrapping for Korean, English, Japanese and Simplified Chinese while preserving the existing Kowrap interface. |
 | [Oddmash UI](https://github.com/Oddmash/oddmash-ui) | Build consistent React interfaces with accessible components and themeable design tokens. |
 | [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) | Inspect DOM events, keyboard focus and supported ARIA states such as `aria-expanded` in Chrome. |
 | [Boundra](https://github.com/Oddmash/boundra) | Define TypeScript contracts and detect violations of architectural boundaries. |
