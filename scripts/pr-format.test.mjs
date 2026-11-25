@@ -24,6 +24,7 @@ const commit = (message, parents = [{}]) => ({ commit: { message }, parents });
 
 const check = async (pr, options = {}) => {
   const failures = [];
+  const warnings = [];
   const issueCalls = [];
   let commitCalls = 0;
   const github = {
@@ -44,48 +45,49 @@ const check = async (pr, options = {}) => {
     repo: { owner: 'Oddmash', repo: 'example' },
     payload: { pull_request: { number: 12, head: { sha: options.eventHead || pr.head.sha } } }
   };
-  const core = { setFailed: message => failures.push(message), info: () => {} };
+  const core = { setFailed: message => failures.push(message), warning: message => warnings.push(message), info: () => {} };
   await validate(github, context, core);
-  return { failures, issueCalls, commitCalls };
+  assert.deepEqual(failures, options.eventHead === 'old' ? ['PR head changed; wait for the current revision check.'] : []);
+  return { failures, warnings, issueCalls, commitCalls };
 };
 
 test('valid integration PR, local issue, conventional commit', async () => {
   const result = await check(makePr());
-  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.warnings, []);
   assert.deepEqual(result.issueCalls, [123]);
   assert.equal(result.commitCalls, 1);
 });
 
-test('template placeholders and malformed title are rejected', async () => {
+test('template placeholders and malformed title produce warnings', async () => {
   const result = await check(makePr({
     title: 'fix focus',
     body: body.replace('Refs #123', 'Closes #').replace('- Fix keyboard focus.', '- What changed and why?')
       .replace('- pnpm test passed.', '- List the actual commands or checks run and their results. Note checks not run and why.')
   }));
-  assert.match(result.failures.join(' '), /type-prefixed title/);
-  assert.match(result.failures.join(' '), /valid issue reference/);
-  assert.match(result.failures.join(' '), /Fill in the Summary/);
-  assert.match(result.failures.join(' '), /Fill in the Verification/);
+  assert.match(result.warnings.join(' '), /type-prefixed title/);
+  assert.match(result.warnings.join(' '), /valid issue reference/);
+  assert.match(result.warnings.join(' '), /Fill in the Summary/);
+  assert.match(result.warnings.join(' '), /Fill in the Verification/);
 });
 
 test('links in comments and fenced blocks do not satisfy the template', async () => {
   const result = await check(makePr({ body: body.replace('Refs #123', '<!-- Refs #123 -->\n~~~text\nRefs #123\n~~~') }));
-  assert.match(result.failures.join(' '), /valid issue reference/);
+  assert.match(result.warnings.join(' '), /valid issue reference/);
   assert.deepEqual(result.issueCalls, []);
 });
 
-test('heading order and duplicates are rejected', async () => {
+test('heading order and duplicates produce warnings', async () => {
   const result = await check(makePr({ body: body.replace('## Summary', '## Verification\ncontent\n## Summary') }));
-  assert.match(result.failures.join(' '), /once, in template order/);
+  assert.match(result.warnings.join(' '), /once, in template order/);
 });
 
-test('integration closes is rejected and missing or PR references fail', async () => {
+test('integration closes and missing or PR references produce warnings', async () => {
   const closed = await check(makePr({ body: body.replace('Refs #123', 'Closes #123') }));
-  assert.match(closed.failures.join(' '), /Use Refs for an integration branch/);
+  assert.match(closed.warnings.join(' '), /Use Refs for an integration branch/);
   const missing = await check(makePr(), { missingIssue: true });
-  assert.match(missing.failures.join(' '), /could not be verified/);
+  assert.match(missing.warnings.join(' '), /could not be verified/);
   const pull = await check(makePr(), { issue: { pull_request: {} } });
-  assert.match(pull.failures.join(' '), /not an issue/);
+  assert.match(pull.warnings.join(' '), /not an issue/);
 });
 
 test('default-branch release permits multiple references and skips historical subjects', async () => {
@@ -95,27 +97,28 @@ test('default-branch release permits multiple references and skips historical su
     head: { ref: 'develop', sha: 'head', repo: { id: 1 } },
     base: { ref: 'main', repo: { id: 1, default_branch: 'main' } }
   }));
-  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.warnings, []);
   assert.deepEqual(result.issueCalls, [123, 124]);
   assert.equal(result.commitCalls, 0);
 });
 
 test('fork contributions use metadata validation without rewriting commit history', async () => {
   const result = await check(makePr({ author_association: 'CONTRIBUTOR', head: { ref: 'patch-1', sha: 'head', repo: { id: 2 } } }));
-  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.warnings, []);
   assert.equal(result.commitCalls, 0);
 });
 
-test('bad topic commit is rejected, merge commit ignored', async () => {
+test('bad topic commit produces a warning, merge commit ignored', async () => {
   const result = await check(makePr({ commits: 3 }), {
     commits: [commit('Merge branch', [{}, {}]), commit('fix: change focus'), commit('misc updates')]
   });
-  assert.match(result.failures.join(' '), /Commit 3 needs a type-prefixed subject/);
+  assert.match(result.warnings.join(' '), /Commit 3 needs a type-prefixed subject/);
 });
 
 test('old event head cannot validate a newer revision', async () => {
   const result = await check(makePr(), { eventHead: 'old' });
   assert.match(result.failures.join(' '), /head changed/);
+  assert.deepEqual(result.warnings, []);
   assert.equal(result.commitCalls, 0);
 });
 
@@ -125,37 +128,37 @@ test('recent local issue forms accept required headings and correct type', async
     labels: [{ name: 'type: chore' }, { name: 'area: workflow' }],
     body: '### Context\n\nMaintain CI.\n\n### Proposed maintenance\n\nAdd checks.\n\n### Impact and risks\n\nNone.\n\n### Acceptance criteria\n\n- [ ] Checks pass.'
   } });
-  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.warnings, []);
 });
 
 test('recent API-created issue needs a supported type and filled fields', async () => {
   const issue = { created_at: '2026-11-25T00:00:00Z', body: 'Missing fields.' };
   const untyped = await check(makePr(), { issue: { ...issue, labels: [] } });
-  assert.match(untyped.failures.join(' '), /exactly one supported issue-form type label/);
+  assert.match(untyped.warnings.join(' '), /exactly one supported issue-form type label/);
   const malformed = await check(makePr(), { issue: { ...issue, labels: [{ name: 'type: fix' }], body: '## Problem\n\nConfirmed problem.\n\n## Scope\n\n_No response_' } });
-  assert.match(malformed.failures.join(' '), /must fill its Scope field/);
-  assert.match(malformed.failures.join(' '), /must fill its Acceptance criteria field/);
+  assert.match(malformed.warnings.join(' '), /must fill its Scope field/);
+  assert.match(malformed.warnings.join(' '), /must fill its Acceptance criteria field/);
 });
 
 test('legacy local issues remain linkable without retroactive format enforcement', async () => {
   const result = await check(makePr(), { issue: { created_at: '2026-11-24T08:31:34Z', labels: [], body: 'Legacy issue.' } });
-  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.warnings, []);
 });
 
 test('topic PRs require a single issue and release links may not repeat an issue', async () => {
   const topic = await check(makePr({ body: body.replace('Refs #123', 'Refs #123\nRefs #124') }));
-  assert.match(topic.failures.join(' '), /exactly one scoped issue reference/);
+  assert.match(topic.warnings.join(' '), /exactly one scoped issue reference/);
   const duplicate = await check(makePr({
     body: body.replace('Refs #123', 'Closes #123\nRefs #123'),
     head: { ref: 'develop', sha: 'head', repo: { id: 1 } },
     base: { ref: 'main', repo: { id: 1, default_branch: 'main' } }
   }));
-  assert.match(duplicate.failures.join(' '), /List each linked issue once/);
+  assert.match(duplicate.warnings.join(' '), /List each linked issue once/);
 });
 
 test('default branch synchronization preserves historical commit subjects', async () => {
   const result = await check(makePr({ head: { ref: 'main', sha: 'head', repo: { id: 1 } } }), { commits: [commit('historical subject')] });
-  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.warnings, []);
   assert.equal(result.commitCalls, 0);
 });
 
@@ -165,7 +168,7 @@ test('acceptance criteria support ordinary bullets and checkboxes but reject pro
   const good = await check(makePr(), { issue: { ...issue, body: prefix + '- Existing tests pass.\n- [ ] New checks pass.' } });
   assert.deepEqual(good.failures, []);
   const bad = await check(makePr(), { issue: { ...issue, body: prefix + 'Existing tests pass.' } });
-  assert.match(bad.failures.join(' '), /Markdown bullets or checkboxes/);
+  assert.match(bad.warnings.join(' '), /Markdown bullets or checkboxes/);
   const empty = await check(makePr(), { issue: { ...issue, body: prefix + '- Existing tests pass.\n- [ ]' } });
-  assert.match(empty.failures.join(' '), /Markdown bullets or checkboxes/);
+  assert.match(empty.warnings.join(' '), /Markdown bullets or checkboxes/);
 });
