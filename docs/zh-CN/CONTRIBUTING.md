@@ -14,7 +14,7 @@ Oddmash 是由个人运营的独立软件工作室。公开仓库欢迎范围明
 
 ## 提议变更
 
-新增功能或涉及项目多个部分的变更，请先创建 Issue。小范围修复可以直接提交拉取请求，并说明改动会影响哪些行为。
+新增功能或涉及项目多个部分的变更，请先创建 Issue。即使是小范围实现变更，也必须先创建范围明确的 Issue，并在 PR 正文中链接。
 
 ## 项目 README 编写规范
 
@@ -50,3 +50,4 @@ JavaScript/TypeScript 仓库内部使用 `package.json` 中固定的统一 pnpm 
 - 公开仓库的网页 Issue 表单有必填字段。私有仓库、API/CLI 创建、编辑以及维护者创建的空白 Issue 可以绕过表单，因此代理必须自行检查正文和标签。
 - [共用 CI 检查](../../CONTRIBUTING.md#contribution-format-checks)以只读权限验证 PR 标题、正文结构、本地 Issue 引用等。证据是否真实、语言是否合规仍需审核。每个仓库需要升级到已审核的 CI 版本、启用 PR 编辑事件并保留现有必需检查和权限。
 - 从政策引入 Issue 的创建时间 2026-11-24 08:31:35 UTC 起，本地 Issue 必须具有一个支持的类型标签和已填写的必填表单部分。旧 Issue 不受追溯检查。
+- 请使用[英文测试专用 PR 示例](../../CONTRIBUTING.md#example-a-small-test-only-pr-targeting-develop)中的五个原始标题。`scope / scope` 的 `Validate contribution metadata` 失败与测试失败不同。检查日志并编辑 PR 正文后，支持该事件的仓库会启动新的 CI。外部 fork 可能需要维护者批准。
