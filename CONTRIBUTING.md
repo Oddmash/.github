@@ -60,3 +60,36 @@ Use `.github/workflows/node-ci.yml` for repositories whose checks run through `p
 - The change-aware [CI scope](.github/workflows/ci-scope.yml) validates PR metadata through read-only GitHub API calls before checking out source. It verifies local issue references actually identify issues; cross-repository references are checked structurally, not fetched outside the caller token's repository scope. Local issues created at or after 2026-11-24 08:31:35 UTC (the issue introducing this policy) must also have exactly one supported issue type label and the required form sections filled. Earlier issues remain linkable without retroactive formatting changes. Invalid metadata fails the same scope job whose result is required by the existing aggregate verification job.
 - On each caller, pin the reviewed scope revision, grant only `contents: read`, `issues: read` and `pull-requests: read` to the scope call, and trigger PR workflows on `opened`, `reopened`, `synchronize`, `edited` and `ready_for_review`. Preserve existing checks, permission boundaries and required aggregate status names. Confirm required-status configuration on protected branches so a failed validation actually blocks merging. Previously pinned callers only adopt these checks after their own reviewed migration; the default community templates alone do not install workflows.
 - Refs and Closes follow the branch policy above. The independently reviewed auto-merge policy accepts one same-repository standalone Refs or Closes reference with measurable acceptance evidence. Multi-issue releases and cross-repository references are valid for manual merging. Do not falsify an issue-closing reference merely to satisfy automation.
+
+
+
+### Example: a small test-only PR targeting develop
+
+Use the [shared PR template](https://github.com/Oddmash/.github/blob/main/PULL_REQUEST_TEMPLATE.md). Keep all five headings exactly as shown, in order, and replace the example issue number and verification details with your own. Do not claim checks you did not run.
+
+```markdown
+## Related issue
+
+Refs #123
+
+## Summary
+
+- Add focused accessibility tests for an existing component.
+
+## Verification
+
+- List the actual test command and result here.
+- Note any checks not run and why.
+
+## Product and design impact
+
+Test-only coverage; no runtime or visual changes.
+
+## Permissions and data
+
+None.
+```
+
+Use `Refs #123` when targeting `develop` or doing partial work. Use `Closes #123` only when the completed work merges into the default branch. The reference belongs under Related issue.
+
+If CI reports a failure in `scope / scope` at **Validate contribution metadata**, inspect its log for missing headings or issue references and edit the PR description. This is separate from test failures. Editing the description triggers a new CI run in repositories using the current shared workflow. For external forks, a maintainer may need to approve the new workflow run before checks execute.
