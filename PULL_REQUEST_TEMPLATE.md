@@ -1,5 +1,7 @@
 Write the title and description in English. Use a type-prefixed title, such as `fix: clarify focus`. Complete every heading before requesting review and remove instructional placeholders.
 
+For a compact test-only example and help with metadata CI failures, see the [contribution guide](https://github.com/Oddmash/.github/blob/main/CONTRIBUTING.md#example-a-small-test-only-pr-targeting-develop).
+
 Open as ready for review by default. If a draft is necessary, explain why and what must change before marking it ready. Pending remote CI or review alone is not a draft reason.
 
 ## Related issue
