@@ -60,6 +60,10 @@ jobs:
                 "ededed",
                 "Other change type"
               ],
+              "status: in progress": [
+                "1d76db",
+                "Active work claim; coordinate before starting overlapping changes"
+              ],
               "area: accessibility": [
                 "ededed",
                 "Work related to accessibility"
