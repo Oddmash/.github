@@ -12,7 +12,7 @@ Oddmash は、日々の開発体験を改善するオープンソースツール
 
 | プロジェクト | 解決する課題 |
 | --- | --- |
-| [Juliya (Kowrap)](https://github.com/Oddmash/kowrap) | 既存の Kowrap インターフェースを維持し、韓国語、英語、日本語、中国語（簡体字）の改行を改善します。 |
+| [Juliya](https://github.com/Oddmash/juliya) | 既存の Kowrap インターフェースを維持し、韓国語、英語、日本語、中国語（簡体字）の改行を改善します。 |
 | [Oddmash UI](https://github.com/Oddmash/oddmash-ui) | アクセシビリティに配慮したコンポーネントとテーマ対応のデザイントークンで、一貫した React インターフェースを構築します。 |
 | [Interaction Inspector](https://github.com/Oddmash/interaction-inspector) | Chrome で DOM イベント、キーボードフォーカス、`aria-expanded` など対応する ARIA 状態を調べます。 |
 | [Boundra](https://github.com/Oddmash/boundra) | TypeScript の契約を定義し、アーキテクチャの境界違反を検出します。 |
