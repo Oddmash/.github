@@ -23,6 +23,7 @@ check_gh_options() {
   gh_subcommand=$1
   shift
   explicit_head=false
+  has_title=false has_body=false
   while [ "$#" -gt 0 ]; do
     case "$gh_subcommand:$1" in
       pr:--draft|pr:--no-maintainer-edit) shift; continue ;;
@@ -32,13 +33,23 @@ check_gh_options() {
         esac
         explicit_head=true
         ;;
-      issue:-t|issue:--title|issue:-b|issue:--body|issue:-F|issue:--body-file|issue:-l|issue:--label|issue:-a|issue:--assignee) ;;
-      pr:-t|pr:--title|pr:-b|pr:--body|pr:-F|pr:--body-file|pr:-B|pr:--base|pr:-l|pr:--label|pr:-a|pr:--assignee|pr:-r|pr:--reviewer) ;;
+      issue:-t|issue:--title|pr:-t|pr:--title)
+        [ -n "${2:-}" ] || fail 'Provide a nonempty title before authenticating.'
+        has_title=true
+        ;;
+      issue:-b|issue:--body|issue:-F|issue:--body-file|pr:-b|pr:--body|pr:-F|pr:--body-file)
+        [ -n "${2:-}" ] || fail 'Provide a body or body file before authenticating.'
+        has_body=true
+        ;;
+      issue:-l|issue:--label|issue:-a|issue:--assignee) ;;
+      pr:-B|pr:--base|pr:-l|pr:--label|pr:-a|pr:--assignee|pr:-r|pr:--reviewer) ;;
       *) fail 'Unsupported GitHub CLI option. Use the documented options with separate values.' ;;
     esac
     [ "$#" -ge 2 ] || fail 'A GitHub CLI option is missing its value.'
     shift 2
   done
+  [ "$has_title" = true ] && [ "$has_body" = true ] ||
+    fail 'Provide a title and body or body file before authenticating.'
   if [ "$gh_subcommand" = pr ] && [ "$explicit_head" = false ]; then
     fail 'Push the branch separately and provide --head when creating a PR.'
   fi
@@ -109,6 +120,7 @@ case "${1:-}" in
         check_repository_path "$repository" || fail 'Use --repo OWNER/REPO on github.com.'
         shift 4
         check_gh_options "$kind" "$@"
+        export GH_PROMPT_DISABLED=1 GH_PAGER=cat
         load_github_credential
         exec gh "$kind" create --repo "github.com/$repository" "$@"
         ;;
@@ -147,13 +159,13 @@ case "${1:-}" in
       commit)
         shift
         check_commit_options "$@"
-        set -- commit "$@"
+        export GIT_AUTHOR_NAME=arvynoo GIT_COMMITTER_NAME=arvynoo
+        export GIT_AUTHOR_EMAIL=264418006+arvynoo@users.noreply.github.com
+        export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+        exec git commit "$@"
         ;;
       *) fail 'Use an explicit Git push or commit command.' ;;
     esac
-    export GIT_AUTHOR_NAME=arvynoo GIT_COMMITTER_NAME=arvynoo
-    export GIT_AUTHOR_EMAIL=264418006+arvynoo@users.noreply.github.com
-    export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
     export GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=false
     exec git -c credential.helper= \
       -c 'credential.https://github.com.helper=!f() { [ "$1" = get ] || return 0; set +x; . "$ODDMASH_AI_KEYCHAIN"; git_github_credential; }; f' \

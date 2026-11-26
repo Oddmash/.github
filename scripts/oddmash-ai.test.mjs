@@ -278,9 +278,19 @@ test('Git commits set both identities and reject forms that reuse authorship', t
   assert.equal(gitCommand('rev-parse', 'HEAD'), previousHead);
   rmSync(cherryPickHead);
 
+  const hookMarker = join(directory, 'commit-hook-ran');
+  writeFileSync(join(directory, '.git', 'hooks', 'pre-commit'), [
+    '#!/bin/sh',
+    '[ -z "${GH_TOKEN+x}${GITHUB_TOKEN+x}" ] || exit 2',
+    'if git config --get-regexp "^credential(\\..*)?\\.helper$" >/dev/null; then exit 3; fi',
+    ': > "$COMMIT_HOOK_MARKER"',
+    '',
+  ].join('\n'), { mode: 0o700 });
+  env.COMMIT_HOOK_MARKER = hookMarker;
   const commit = launch('-m', 'ordinary commit');
   assert.ifError(commit.error);
   assert.equal(commit.status, 0, commit.stderr);
+  assert.equal(existsSync(hookMarker), true);
   assert.equal(gitCommand('show', '-s', '--format=%an <%ae>|%cn <%ce>'), [
     'arvynoo <264418006+arvynoo@users.noreply.github.com>',
     'arvynoo <264418006+arvynoo@users.noreply.github.com>',
@@ -293,6 +303,9 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
   const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
   const marker = join(directory, 'gh-called');
   const keychain = join(directory, 'keychain-queries');
+  const editor = join(directory, 'editor');
+  const editorMarker = join(directory, 'editor-called');
+  writeFileSync(editor, '#!/bin/sh\n: > "$EDITOR_MARKER"\n', { mode: 0o700 });
   writeFileSync(join(directory, 'uname'), '#!/bin/sh\nprintf "%s\\n" Linux\n', { mode: 0o700 });
   writeFileSync(join(directory, 'secret-tool'), [
     '#!/bin/sh',
@@ -312,7 +325,10 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     '  "api user")',
     '    [ "$3 $4 $5" = "--hostname github.com --jq" ] || exit 4',
     '    printf "%s\\n" arvynoo:264418006 ;;',
-    '  "issue create"|"pr create") test "$3 $4" = "--repo github.com/Oddmash/fixture" ;;',
+    '  "issue create"|"pr create")',
+    '    [ "$GH_PROMPT_DISABLED" = 1 ] || "$GH_EDITOR"',
+    '    [ "$GH_PROMPT_DISABLED" = 1 ] && [ "$GH_PAGER" = cat ] &&',
+    '      [ "$3 $4" = "--repo github.com/Oddmash/fixture" ] ;;',
     '  *) exit 2 ;;',
     'esac',
     '',
@@ -326,6 +342,8 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
       GH_MARKER: marker,
       KEYCHAIN_QUERIES: keychain,
       GH_DEBUG: 'api',
+      GH_EDITOR: editor,
+      EDITOR_MARKER: editorMarker,
     },
     encoding: 'utf8',
   });
@@ -339,12 +357,17 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     ['issue', 'create', '--repo', 'Oddmash/fixture', '--repo', 'git.example.invalid/owner/repo'],
     ['pr', 'create', '--repo', 'Oddmash/fixture', '--head', ''],
     ['pr', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture'],
+    ['issue', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture'],
+    ['issue', 'create', '--repo', 'Oddmash/fixture', '--body', 'fixture'],
+    ['issue', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture', '--body', ''],
+    ['pr', 'create', '--repo', 'Oddmash/fixture', '--head', 'topic', '--title', 'fixture'],
   ]) {
     const result = launch(...arguments_);
     assert.ifError(result.error);
     assert.equal(result.status, 1, result.stderr);
     assert.equal(existsSync(marker), false);
     assert.equal(existsSync(keychain), false);
+    assert.equal(existsSync(editorMarker), false);
   }
 
   const identity = launch('api', 'user', '--jq', '.login');
@@ -353,14 +376,15 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
   assert.equal(identity.stdout.trim(), 'arvynoo');
 
   for (const arguments_ of [
-    ['issue', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture'],
-    ['pr', 'create', '--repo', 'Oddmash/fixture', '--head', 'topic', '--title', 'fixture'],
+    ['issue', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture', '--body', 'details'],
+    ['pr', 'create', '--repo', 'Oddmash/fixture', '--head', 'topic', '--title', 'fixture', '--body-file', '-'],
   ]) {
     const result = launch(...arguments_);
     assert.ifError(result.error);
     assert.equal(result.status, 0, result.stderr);
     assert.equal(existsSync(marker), true);
   }
+  assert.equal(existsSync(editorMarker), false);
   assert.deepEqual(readFileSync(keychain, 'utf8').trim().split('\n'), Array(3).fill(
     'lookup service gh:github.com username arvynoo',
   ));
