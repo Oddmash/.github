@@ -26,7 +26,7 @@ test('Only the internal Git helper can supply credentials for the assigned HTTPS
   writeFileSync(join(directory, 'askpass'), '#!/bin/sh\n: > "$ASKPASS_MARKER"\n', { mode: 0o700 });
   writeFileSync(join(directory, 'git'), [
     '#!/bin/sh',
-    'case " $* " in *" config "*|*" remote "*) exec "$REAL_GIT" "$@" ;; esac',
+    'case " $* " in *" config "*|*" remote "*|*" rev-parse "*) exec "$REAL_GIT" "$@" ;; esac',
     'while [ "$1" = -c ]; do',
     '  case "$2" in credential.https://github.com.helper=*) helper_option=$2 ;; esac',
     '  shift 2',
@@ -151,7 +151,7 @@ test('Git push rejects a rewritten transport and disables destination-specific r
   const marker = join(directory, 'push-called');
   writeFileSync(join(directory, 'git'), [
     '#!/bin/sh',
-    'case " $* " in *" config "*|*" remote "*) exec "$REAL_GIT" "$@" ;; esac',
+    'case " $* " in *" config "*|*" remote "*|*" rev-parse "*) exec "$REAL_GIT" "$@" ;; esac',
     '[ "$GIT_ALLOW_PROTOCOL" = https ] || exit 2',
     '[ "$GIT_TRACE_REDACT" = 1 ] || exit 5',
     '[ -z "${GIT_TRACE_CURL+x}${GIT_CURL_VERBOSE+x}" ] || exit 6',
@@ -210,6 +210,74 @@ test('Git push rejects a rewritten transport and disables destination-specific r
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stderr);
   assert.equal(readFileSync(marker, 'utf8').trim(), 'false');
+});
+
+test('Push preserves repository hooks without launcher credentials and skips implicit tags', t => {
+  const { directory, env, gitCommand } = gitRepository(t);
+  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
+  const git = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' });
+  assert.equal(git.status, 0);
+  const bare = join(directory, 'destination.git');
+  const hookMarker = join(directory, 'pre-push-ran');
+
+  gitCommand('init', '--bare', '--quiet', bare);
+  writeFileSync(join(directory, 'fixture.txt'), 'fixture');
+  gitCommand('add', 'fixture.txt');
+  const identity = ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid'];
+  gitCommand(...identity, 'commit', '-m', 'fixture');
+  gitCommand(...identity, 'tag', '-a', 'fixture-tag', '-m', 'fixture tag');
+  gitCommand('config', 'push.followTags', 'true');
+  writeFileSync(join(directory, '.git', 'hooks', 'pre-push'), [
+    '#!/bin/sh',
+    '[ -z "${GH_TOKEN+x}${ODDMASH_AI_KEYCHAIN+x}" ] || exit 2',
+    'if git config --get-regexp "^credential(\\..*)?\\.helper$" >/dev/null; then exit 3; fi',
+    '[ "$(git config --get fixture.setting)" = preserved ] || exit 4',
+    ': > "$HOOK_MARKER"',
+    'cat >/dev/null',
+    '',
+  ].join('\n'), { mode: 0o700 });
+  writeFileSync(join(directory, 'git'), [
+    '#!/usr/bin/env node',
+    'const { spawnSync } = require("node:child_process");',
+    'const args = process.argv.slice(2);',
+    'let command = 0;',
+    'while (args[command] === "-c") command += 2;',
+    'const env = { ...process.env };',
+    'if (args[command] === "push") {',
+    '  if (!args.some(arg => arg.startsWith("credential.https://github.com.helper="))) process.exit(5);',
+    '  args[command + 1] = env.FIXTURE_BARE;',
+    '  env.GIT_ALLOW_PROTOCOL = "file";',
+    '}',
+    'const result = spawnSync(env.REAL_GIT, args, { env, stdio: "inherit" });',
+    'process.exit(result.status ?? 1);',
+    '',
+  ].join('\n'), { mode: 0o700 });
+  const launch = refspec => spawnSync(launcher, ['git', 'push', 'origin', refspec], {
+    cwd: directory,
+    env: {
+      ...env,
+      PATH: directory + delimiter + process.env.PATH,
+      REAL_GIT: git.stdout.trim(),
+      FIXTURE_BARE: bare,
+      HOOK_MARKER: hookMarker,
+      GIT_CONFIG_PARAMETERS: "'fixture.setting=preserved'",
+    },
+    encoding: 'utf8',
+  });
+
+  const branch = launch('HEAD:refs/heads/topic');
+  assert.ifError(branch.error);
+  assert.equal(branch.status, 0, branch.stderr);
+  assert.equal(existsSync(hookMarker), true);
+  assert.equal(gitCommand('--git-dir', bare, 'for-each-ref', '--format=%(refname)', 'refs/tags'), '');
+
+  const tag = launch('refs/tags/fixture-tag');
+  assert.ifError(tag.error);
+  assert.equal(tag.status, 0, tag.stderr);
+  assert.equal(
+    gitCommand('--git-dir', bare, 'for-each-ref', '--format=%(refname)', 'refs/tags'),
+    'refs/tags/fixture-tag',
+  );
 });
 
 test('Git push refuses disabled TLS verification before authenticating', t => {

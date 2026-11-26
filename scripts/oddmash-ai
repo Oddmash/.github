@@ -167,10 +167,22 @@ case "${1:-}" in
       *) fail 'Use an explicit Git push or commit command.' ;;
     esac
     export GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=false
-    exec git -c credential.helper= \
+    ODDMASH_AI_ORIGINAL_HOOKS=$(git rev-parse --path-format=absolute --git-path hooks) ||
+      fail 'Cannot determine the configured Git hooks directory.'
+    ODDMASH_AI_INHERITED_CONFIG_SET=${GIT_CONFIG_PARAMETERS+x}
+    ODDMASH_AI_INHERITED_CONFIG=${GIT_CONFIG_PARAMETERS-}
+    export ODDMASH_AI_ORIGINAL_HOOKS ODDMASH_AI_INHERITED_CONFIG_SET ODDMASH_AI_INHERITED_CONFIG
+    hook_directory=$(mktemp -d "${TMPDIR:-/tmp}/oddmash-ai-hooks.XXXXXXXX") ||
+      fail 'Cannot create an isolated Git hooks directory.'
+    trap 'rm -rf -- "$hook_directory"' 0
+    for hook in "$ODDMASH_AI_ORIGINAL_HOOKS"/*; do
+      [ -f "$hook" ] && [ -x "$hook" ] || continue
+      ln -s "$launcher_directory/oddmash-ai-hook.sh" "$hook_directory/${hook##*/}"
+    done
+    git -c "core.hooksPath=$hook_directory" -c credential.helper= \
       -c 'credential.https://github.com.helper=!f() { [ "$1" = get ] || return 0; set +x; . "$ODDMASH_AI_KEYCHAIN"; git_github_credential; }; f' \
       -c credential.https://github.com.username=arvynoo \
-      -c http.followRedirects=false -c push.recurseSubmodules=no "$@"
+      -c http.followRedirects=false -c push.recurseSubmodules=no -c push.followTags=false "$@"
     ;;
   *) printf '%s\n' 'Usage: oddmash-ai gh|git <arguments>' >&2; exit 2 ;;
 esac
