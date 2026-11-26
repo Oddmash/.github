@@ -2,8 +2,8 @@
 
 | Account | Responsibilities |
 | --- | --- |
-| `qtaghdi` | Organization owner and maintainer. Manages access and branch rules, gives final approval to external PRs, and performs their manual merges. |
-| `arvynoo` | AI development and operations account. Uses the organization Member role and per-repository Write access where same-repository development is needed. Uses topic branches for commits and opens issues and pull requests. |
+| `qtaghdi` (ID `135234546`) | Organization owner and maintainer. Manages access and branch rules, gives final approval to external PRs, and performs their manual merges. |
+| `arvynoo` (ID `264418006`) | AI development and operations account. Uses the organization Member role and per-repository Write access where same-repository development is needed. Uses topic branches for commits and opens issues and pull requests. |
 | `oddmash-lead[bot]` | Current identity of the Oddmash Reviewer GitHub App. Reviews and verifies pull requests. Its separate merge module follows the existing [Phase 4 gates](AI-CODE-REVIEW.md#phase-4-maintainer-only-auto-merge). |
 
 Use each account for its assigned work. Grant `arvynoo` the organization Member role and keep Admin, Maintain, and branch-rule bypass out of its repository assignments. Reserve release and deployment authorization for `qtaghdi`. GitHub’s built-in Write role still permits creating and editing GitHub Releases. Verify an owner-only production gate where Write is granted, such as Oddmash Agents’ deployment workflow that checks the owner’s GitHub ID. Use Read and fork-based development wherever GitHub Release mutations themselves must be technically restricted. Keep organization base access at Read or below. Grant repository access explicitly and verify it using the account's effective GitHub permissions. Owner commands and approval of the issue acceptance criteria used by automatic merging stay with `qtaghdi`.
