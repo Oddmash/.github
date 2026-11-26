@@ -7,40 +7,10 @@ export GH_HOST=github.com LC_ALL=C GIT_TRACE_REDACT=1
 unset GH_DEBUG GIT_TRACE GIT_TRACE_CURL GIT_CURL_VERBOSE GIT_TRACE_PACKET GIT_TRACE2 GIT_TRACE2_EVENT GIT_TRACE2_PERF
 unset GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN GH_REPO GIT_CONFIG
 
-fail() {
-  printf '%s\n' "$1" >&2
-  exit 1
-}
-
-load_github_credential() {
-  # GitHub CLI stores per-account entries under the gh:github.com service.
-  case "$(uname -s)" in
-    Darwin)
-      entry=$(security find-generic-password -s gh:github.com -a arvynoo -w 2>/dev/null) ||
-        fail 'Use the arvynoo credential in the system keychain.'
-      case "$entry" in
-        go-keyring-base64:*)
-          GH_TOKEN=$(printf '%s' "${entry#go-keyring-base64:}" | base64 -D 2>/dev/null) ||
-            fail 'Cannot decode the arvynoo credential.'
-          ;;
-        go-keyring-encoded:*) fail 'Refresh the legacy arvynoo keychain entry with GitHub CLI.' ;;
-        *) GH_TOKEN=$entry ;;
-      esac
-      ;;
-    Linux)
-      GH_TOKEN=$(secret-tool lookup service gh:github.com username arvynoo 2>/dev/null) ||
-        fail 'Use the arvynoo credential in the system keychain with secret-tool.'
-      ;;
-    *) fail 'The launcher supports macOS Keychain and Linux Secret Service.' ;;
-  esac
-  case "$GH_TOKEN" in
-    ''|*[!a-zA-Z0-9_]*) fail 'The arvynoo keychain entry is not a GitHub token.' ;;
-  esac
-  export GH_TOKEN
-  identity=$(gh api user --hostname github.com --jq '.login + ":" + (.id | tostring)') ||
-    fail 'Cannot verify the arvynoo GitHub account.'
-  [ "$identity" = 'arvynoo:264418006' ] || fail 'The GitHub credential does not belong to arvynoo.'
-}
+launcher_directory=$(cd "$(dirname "$0")" && pwd -P)
+ODDMASH_AI_KEYCHAIN="$launcher_directory/oddmash-ai-keychain.sh"
+export ODDMASH_AI_KEYCHAIN
+. "$ODDMASH_AI_KEYCHAIN"
 
 check_repository_path() {
   case "$1" in
@@ -153,11 +123,6 @@ case "${1:-}" in
       *) fail 'Use the GitHub API or create an issue or pull request.' ;;
     esac
     ;;
-  credential)
-    [ "$#" -eq 2 ] && [ "$2" = get ] || exit 0
-    load_github_credential
-    printf 'username=arvynoo\npassword=%s\n\n' "$GH_TOKEN"
-    ;;
   git)
     shift
     case "${1:-}" in
@@ -192,19 +157,14 @@ case "${1:-}" in
         check_commit_options "$@"
         set -- commit "$@"
         ;;
-      credential)
-        [ "$#" -eq 2 ] && [ "$2" = fill ] || fail 'Unsupported Git credential operation.'
-        ;;
       *) fail 'Use an explicit Git push or commit command.' ;;
     esac
     export GIT_AUTHOR_NAME=arvynoo GIT_COMMITTER_NAME=arvynoo
     export GIT_AUTHOR_EMAIL=264418006+arvynoo@users.noreply.github.com
     export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
     export GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=false
-    ODDMASH_AI_LAUNCHER="$(cd "$(dirname "$0")" && pwd -P)/$(basename "$0")"
-    export ODDMASH_AI_LAUNCHER
     exec git -c credential.helper= \
-      -c 'credential.https://github.com.helper=!f() { [ "$1" = get ] || return 0; "$ODDMASH_AI_LAUNCHER" credential get; }; f' \
+      -c 'credential.https://github.com.helper=!f() { [ "$1" = get ] || return 0; set +x; . "$ODDMASH_AI_KEYCHAIN"; git_github_credential; }; f' \
       -c credential.https://github.com.username=arvynoo \
       -c http.followRedirects=false -c push.recurseSubmodules=no "$@"
     ;;

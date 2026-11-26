@@ -6,35 +6,82 @@ import { delimiter, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-test('Git credential lookup fails without invoking an alternate askpass provider', t => {
-  const fixture = mkdtempSync(join(tmpdir(), 'oddmash-ai-test-'));
-  t.after(() => rmSync(fixture, { recursive: true }));
+test('Only the internal Git helper can supply credentials for the assigned HTTPS host', t => {
+  const { directory, env } = gitRepository(t);
   const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
-  const askpass = join(fixture, 'askpass');
-  const marker = join(fixture, 'askpass-used');
-  writeFileSync(join(fixture, 'uname'), '#!/bin/sh\nprintf "%s\\n" Linux\n', { mode: 0o700 });
-  writeFileSync(join(fixture, 'secret-tool'), '#!/bin/sh\nexit 1\n', { mode: 0o700 });
-  writeFileSync(askpass, '#!/bin/sh\n: > "$ASKPASS_MARKER"\nprintf "%s\\n" alternate\n', { mode: 0o700 });
-
-  const result = spawnSync(launcher, ['git', 'credential', 'fill'], {
-    cwd: fixture,
+  const git = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' });
+  assert.equal(git.status, 0);
+  const askpassMarker = join(directory, 'askpass-used');
+  const credentialProtocol = join(directory, 'git-credential-response');
+  const lookupMarker = join(directory, 'keychain-used');
+  writeFileSync(join(directory, 'uname'), '#!/bin/sh\nprintf "%s\\n" Linux\n', { mode: 0o700 });
+  writeFileSync(join(directory, 'secret-tool'), [
+    '#!/bin/sh',
+    ': > "$LOOKUP_MARKER"',
+    '[ "$FIXTURE_KEYCHAIN_AVAILABLE" = yes ] || exit 1',
+    'printf "%s\\n" fixture_ai_token',
+    '',
+  ].join('\n'), { mode: 0o700 });
+  writeFileSync(join(directory, 'gh'), '#!/bin/sh\nprintf "%s\\n" arvynoo:264418006\n', { mode: 0o700 });
+  writeFileSync(join(directory, 'askpass'), '#!/bin/sh\n: > "$ASKPASS_MARKER"\n', { mode: 0o700 });
+  writeFileSync(join(directory, 'git'), [
+    '#!/bin/sh',
+    'case " $* " in *" config "*|*" remote "*) exec "$REAL_GIT" "$@" ;; esac',
+    'while [ "$1" = -c ]; do',
+    '  case "$2" in credential.https://github.com.helper=*) helper_option=$2 ;; esac',
+    '  shift 2',
+    'done',
+    '[ "$*" = "push origin HEAD" ] && [ -n "${helper_option:-}" ] || exit 2',
+    'printf "protocol=https\\nhost=github.com\\nusername=arvynoo\\n\\n" |',
+    '  "$REAL_GIT" -c credential.helper= -c "$helper_option" credential fill > "$CREDENTIAL_PROTOCOL"',
+    '',
+  ].join('\n'), { mode: 0o700 });
+  const childEnv = {
+    ...env,
+    PATH: directory + delimiter + process.env.PATH,
+    REAL_GIT: git.stdout.trim(),
+    GIT_ASKPASS: join(directory, 'askpass'),
+    ASKPASS_MARKER: askpassMarker,
+    CREDENTIAL_PROTOCOL: credentialProtocol,
+    LOOKUP_MARKER: lookupMarker,
+  };
+  const launch = (available, ...arguments_) => spawnSync(launcher, arguments_, {
+    cwd: directory,
+    env: { ...childEnv, FIXTURE_KEYCHAIN_AVAILABLE: available },
     encoding: 'utf8',
-    env: {
-      ...process.env,
-      PATH: fixture + delimiter + process.env.PATH,
-      GIT_CONFIG_GLOBAL: '/dev/null',
-      GIT_CONFIG_NOSYSTEM: '1',
-      GIT_ASKPASS: askpass,
-      ASKPASS_MARKER: marker,
-    },
-    input: 'protocol=https\nhost=github.com\n\n',
   });
 
-  assert.ifError(result.error);
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /system keychain/);
-  assert.equal(existsSync(marker), false);
-  assert.equal(result.stdout, '');
+  for (const arguments_ of [['credential', 'get'], ['git', 'credential', 'fill']]) {
+    const result = launch('yes', ...arguments_);
+    assert.ifError(result.error);
+    assert.notEqual(result.status, 0);
+    assert.equal(result.stdout, '');
+    assert.equal(existsSync(lookupMarker), false);
+  }
+
+  const helper = fileURLToPath(new URL('./oddmash-ai-keychain.sh', import.meta.url));
+  const unsupportedHost = spawnSync('sh', ['-c', '. "$1"; git_github_credential', 'helper', helper], {
+    env: { ...childEnv, FIXTURE_KEYCHAIN_AVAILABLE: 'yes' },
+    input: 'protocol=https\nhost=git.example.invalid\n\n',
+    encoding: 'utf8',
+  });
+  assert.ifError(unsupportedHost.error);
+  assert.equal(unsupportedHost.status, 1);
+  assert.equal(unsupportedHost.stdout, '');
+  assert.equal(existsSync(lookupMarker), false);
+
+  const missingKeychain = launch('no', 'git', 'push', 'origin', 'HEAD');
+  assert.ifError(missingKeychain.error);
+  assert.notEqual(missingKeychain.status, 0);
+  assert.match(missingKeychain.stderr, /system keychain/);
+  assert.equal(existsSync(askpassMarker), false);
+  assert.equal(readFileSync(credentialProtocol, 'utf8'), '');
+
+  const approved = launch('yes', 'git', 'push', 'origin', 'HEAD');
+  assert.ifError(approved.error);
+  assert.equal(approved.status, 0, approved.stderr);
+  assert.equal(approved.stdout, '');
+  assert.match(readFileSync(credentialProtocol, 'utf8'), /^password=fixture_ai_token$/m);
 });
 
 function gitRepository(t) {
