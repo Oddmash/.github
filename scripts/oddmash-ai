@@ -1,0 +1,26 @@
+#!/bin/sh
+# Run GitHub CLI and Git with the Oddmash AI account in this process only.
+set +x
+set -eu
+
+case "${1:-}" in
+  gh|git) command_name=$1; shift ;;
+  *) printf '%s\n' 'Usage: oddmash-ai gh|git <arguments>' >&2; exit 2 ;;
+esac
+
+export GH_HOST=github.com
+unset GH_TOKEN GITHUB_TOKEN
+GH_TOKEN=$(gh auth token --hostname github.com --user arvynoo)
+export GH_TOKEN
+case "$command_name" in
+  gh) exec gh "$@" ;;
+  git)
+    export GIT_AUTHOR_NAME=arvynoo GIT_COMMITTER_NAME=arvynoo
+    export GIT_AUTHOR_EMAIL=264418006+arvynoo@users.noreply.github.com
+    export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+    export GIT_TERMINAL_PROMPT=0
+    exec git -c credential.helper= \
+      -c 'credential.https://github.com.helper=!gh auth git-credential' \
+      -c credential.https://github.com.username=arvynoo "$@"
+    ;;
+esac
