@@ -10,6 +10,12 @@ esac
 
 export GH_HOST=github.com
 unset GH_TOKEN GITHUB_TOKEN
+if [ "$(gh auth status --hostname github.com --json hosts --jq '
+  .hosts["github.com"][] | select(.login == "arvynoo" and .state == "success") | .tokenSource
+')" != keyring ]; then
+  printf '%s\n' 'An active arvynoo credential in the system keychain is required.' >&2
+  exit 1
+fi
 GH_TOKEN=$(gh auth token --hostname github.com --user arvynoo)
 export GH_TOKEN
 case "$command_name" in
