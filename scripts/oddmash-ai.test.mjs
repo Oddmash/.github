@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
 import test from 'node:test';
@@ -36,51 +36,9 @@ test('Git credential lookup fails without invoking an alternate askpass provider
   assert.equal(result.stdout, '');
 });
 
-test('Git push refuses configured HTTP headers without printing their values', () => {
-  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
-  const header = 'X-Oddmash-Test: fixture';
-  const result = spawnSync(launcher, ['git', 'push', '--dry-run', 'https://github.com/Oddmash/fixture.git'], {
-    encoding: 'utf8',
-    env: {
-      ...process.env,
-      GIT_CONFIG_GLOBAL: '/dev/null',
-      GIT_CONFIG_NOSYSTEM: '1',
-      GIT_CONFIG_COUNT: '1',
-      GIT_CONFIG_KEY_0: 'http.https://github.com/Oddmash/.extraHeader',
-      GIT_CONFIG_VALUE_0: header,
-      GIT_ALLOW_PROTOCOL: 'file',
-    },
-  });
-
-  assert.ifError(result.error);
-  assert.equal(result.status, 1);
-  assert.match(result.stderr, /no Git HTTP extra headers/);
-  assert.equal(result.stderr.includes(header), false);
-  assert.equal(result.stdout, '');
-});
-
-test('Git push refuses an inherited netrc file before accessing the remote', () => {
-  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
-  const result = spawnSync(launcher, ['git', 'push', '--dry-run', 'https://github.com/Oddmash/fixture.git'], {
-    encoding: 'utf8',
-    env: { ...process.env, NETRC: '/dev/null', GIT_ALLOW_PROTOCOL: 'file' },
-  });
-
-  assert.ifError(result.error);
-  assert.equal(result.status, 1);
-  assert.match(result.stderr, /without netrc credentials/);
-  assert.equal(result.stdout, '');
-});
-
-test('Git push rejects a rewritten transport and preserves GitHub HTTPS', t => {
-  const directory = mkdtempSync(join(tmpdir(), 'oddmash-ai-transport-'));
+function gitRepository(t) {
+  const directory = mkdtempSync(join(tmpdir(), 'oddmash-ai-repository-'));
   t.after(() => rmSync(directory, { recursive: true }));
-  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
-  const git = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' });
-  assert.equal(git.status, 0);
-  const gitPath = git.stdout.trim();
-  const destination = 'https://github.com/Oddmash/fixture.git';
-  const marker = join(directory, 'push-called');
   const env = {
     ...process.env,
     GIT_CONFIG_GLOBAL: '/dev/null',
@@ -90,17 +48,69 @@ test('Git push rejects a rewritten transport and preserves GitHub HTTPS', t => {
     HOME: directory,
   };
   const gitCommand = (...arguments_) => {
-    const run = spawnSync('git', arguments_, { cwd: directory, env, encoding: 'utf8' });
-    assert.ifError(run.error);
-    assert.equal(run.status, 0, run.stderr);
+    const result = spawnSync('git', arguments_, { cwd: directory, env, encoding: 'utf8' });
+    assert.ifError(result.error);
+    assert.equal(result.status, 0, result.stderr);
+    return result.stdout.trim();
   };
+  const destination = 'https://github.com/Oddmash/fixture.git';
   gitCommand('init', '--quiet');
   gitCommand('remote', 'add', 'origin', destination);
+  return { directory, env, gitCommand, destination };
+}
+
+test('Git push refuses configured HTTP headers without printing their values', t => {
+  const { directory, env, gitCommand } = gitRepository(t);
+  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
+  const header = 'X-Oddmash-Test: fixture';
+  gitCommand('config', 'http.https://github.com/Oddmash/.extraHeader', header);
+
+  const result = spawnSync(launcher, ['git', 'push', '--dry-run', 'origin', 'HEAD'], {
+    cwd: directory,
+    encoding: 'utf8',
+    env: { ...env, GIT_ALLOW_PROTOCOL: 'file' },
+  });
+
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /no Git HTTP extra headers/);
+  assert.equal(result.stderr.includes(header), false);
+  assert.equal(result.stdout, '');
+});
+
+test('Git push refuses an inherited netrc file before accessing the remote', t => {
+  const { directory, env } = gitRepository(t);
+  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
+  const result = spawnSync(launcher, ['git', 'push', '--dry-run', 'origin', 'HEAD'], {
+    cwd: directory,
+    encoding: 'utf8',
+    env: { ...env, NETRC: '/dev/null', GIT_ALLOW_PROTOCOL: 'file' },
+  });
+
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /without netrc credentials/);
+  assert.equal(result.stdout, '');
+});
+
+test('Git push rejects a rewritten transport and disables destination-specific redirects', t => {
+  const { directory, env, gitCommand, destination } = gitRepository(t);
+  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
+  const git = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' });
+  assert.equal(git.status, 0);
+  const gitPath = git.stdout.trim();
+  const marker = join(directory, 'push-called');
   writeFileSync(join(directory, 'git'), [
     '#!/bin/sh',
-    'case "$1" in config|remote) exec "$REAL_GIT" "$@" ;; esac',
+    'case " $* " in *" config "*|*" remote "*) exec "$REAL_GIT" "$@" ;; esac',
     '[ "$GIT_ALLOW_PROTOCOL" = https ] || exit 2',
-    ': > "$PUSH_MARKER"',
+    'while [ "$1" = -c ]; do',
+    '  case "$2" in http.*.followRedirects=false) redirect_setting=$2 ;; esac',
+    '  shift 2',
+    'done',
+    '[ "$*" = "push origin HEAD" ] || exit 3',
+    '[ -n "${redirect_setting:-}" ] || exit 4',
+    '"$REAL_GIT" -c "$redirect_setting" config --type=bool --get-urlmatch http.followRedirects "$PUSH_URL" > "$PUSH_MARKER"',
     '',
   ].join('\n'), { mode: 0o700 });
 
@@ -111,6 +121,7 @@ test('Git push rejects a rewritten transport and preserves GitHub HTTPS', t => {
       PATH: directory + delimiter + process.env.PATH,
       REAL_GIT: gitPath,
       PUSH_MARKER: marker,
+      PUSH_URL: destination,
     },
     encoding: 'utf8',
   });
@@ -123,10 +134,59 @@ test('Git push rejects a rewritten transport and preserves GitHub HTTPS', t => {
   assert.equal(existsSync(marker), false);
 
   gitCommand('config', '--unset', 'url.ssh://git@github.com/.pushInsteadOf');
+  gitCommand('config', `http.${destination}.followRedirects`, 'true');
+  assert.equal(gitCommand('config', '--get-urlmatch', 'http.followRedirects', destination), 'true');
   result = launch();
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stderr);
-  assert.equal(existsSync(marker), true);
+  assert.equal(readFileSync(marker, 'utf8').trim(), 'false');
+});
+
+test('Git commits set both identities and reject forms that reuse authorship', t => {
+  const { directory, env, gitCommand } = gitRepository(t);
+  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
+  const launch = (...arguments_) => spawnSync(launcher, ['git', 'commit', ...arguments_], {
+    cwd: directory,
+    encoding: 'utf8',
+    env,
+  });
+
+  writeFileSync(join(directory, 'initial.txt'), 'initial');
+  gitCommand('add', 'initial.txt');
+  gitCommand('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-m', 'initial');
+  const previousHead = gitCommand('rev-parse', 'HEAD');
+
+  writeFileSync(join(directory, 'changes.txt'), 'changes');
+  gitCommand('add', 'changes.txt');
+  for (const arguments_ of [
+    ['--author=Fixture <fixture@example.invalid>', '-m', 'override'],
+    ['--amend', '--no-edit'],
+    ['-C', 'HEAD'],
+    ['--fixup=amend:HEAD'],
+  ]) {
+    const result = launch(...arguments_);
+    assert.ifError(result.error);
+    assert.equal(result.status, 1, result.stderr);
+    assert.match(result.stderr, /Author overrides and history reuse/);
+    assert.equal(gitCommand('rev-parse', 'HEAD'), previousHead);
+  }
+
+  const cherryPickHead = join(directory, gitCommand('rev-parse', '--git-path', 'CHERRY_PICK_HEAD'));
+  writeFileSync(cherryPickHead, previousHead + '\n');
+  const cherryPick = launch('-m', 'reuse cherry-pick author');
+  assert.ifError(cherryPick.error);
+  assert.equal(cherryPick.status, 1, cherryPick.stderr);
+  assert.match(cherryPick.stderr, /Complete history operations/);
+  assert.equal(gitCommand('rev-parse', 'HEAD'), previousHead);
+  rmSync(cherryPickHead);
+
+  const commit = launch('-m', 'ordinary commit');
+  assert.ifError(commit.error);
+  assert.equal(commit.status, 0, commit.stderr);
+  assert.equal(gitCommand('show', '-s', '--format=%an <%ae>|%cn <%ce>'), [
+    'arvynoo <264418006+arvynoo@users.noreply.github.com>',
+    'arvynoo <264418006+arvynoo@users.noreply.github.com>',
+  ].join('|'));
 });
 
 test('GitHub CLI writes reject alternate hosts before invoking gh', t => {

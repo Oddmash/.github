@@ -55,6 +55,26 @@ check_gh_options() {
   fi
 }
 
+check_commit_options() {
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      -m|--message|-F|--file|--trailer)
+        [ "$#" -ge 2 ] || fail 'A Git commit option is missing its value.'
+        shift
+        ;;
+      --message=*|--file=*|--trailer=*|-a|--all|-s|--signoff) ;;
+      --) break ;;
+      *) fail 'Use a new Git commit with an explicit message. Author overrides and history reuse are unsupported.' ;;
+    esac
+    shift
+  done
+
+  for state in CHERRY_PICK_HEAD rebase-merge rebase-apply; do
+    state_path=$(git rev-parse --git-path "$state") || fail 'Run Git commit from its checkout.'
+    [ ! -e "$state_path" ] || fail 'Complete history operations without the AI commit launcher.'
+  done
+}
+
 check_push_remote() {
   while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -134,8 +154,17 @@ case "${1:-}" in
         check_push_remote "$@"
         set -- push "$@"
         export GIT_ALLOW_PROTOCOL=https
+        redirect_override="http.$push_url.followRedirects=false"
+        redirects=$(git -c "$redirect_override" config --type=bool --get-urlmatch http.followRedirects "$push_url") ||
+          fail 'Cannot verify Git HTTP redirect settings.'
+        [ "$redirects" = false ] || fail 'Git push requires HTTP redirects to be disabled.'
+        set -- -c "$redirect_override" "$@"
         ;;
-      commit) ;;
+      commit)
+        shift
+        check_commit_options "$@"
+        set -- commit "$@"
+        ;;
       credential)
         [ "$#" -eq 2 ] && [ "$2" = fill ] || fail 'Unsupported Git credential operation.'
         ;;
