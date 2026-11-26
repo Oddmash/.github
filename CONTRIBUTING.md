@@ -56,6 +56,10 @@ Use `.github/workflows/node-ci.yml` for repositories whose checks run through `p
 - Follow the project's `CONTRIBUTING.md` for setup and checks. Include the results in your pull request.
 - Explain changes to permissions, captured data, public APIs, deployment, or release behavior.
 
+## Merge pull requests
+
+Public Oddmash repositories allow only GitHub's **Create a merge commit** option for pull requests. Squash and rebase merging are disabled in repository settings. This applies to manual and automated merges.
+
 ## Contribution format checks
 
 - Use the shared [PR template](PULL_REQUEST_TEMPLATE.md). Titles and maintainer topic-branch commit subjects use a type prefix, optionally with a scope: `fix: clarify focus`, `docs(api): update examples`. Existing history, merge commits, external fork commit subjects and the `develop` to default-branch release history are not rewritten.
