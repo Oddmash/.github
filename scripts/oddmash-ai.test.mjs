@@ -22,7 +22,7 @@ test('Only the internal Git helper can supply credentials for the assigned HTTPS
     'printf "%s\\n" fixture_ai_token',
     '',
   ].join('\n'), { mode: 0o700 });
-  writeFileSync(join(directory, 'gh'), '#!/bin/sh\nprintf "%s\\n" arvynoo:264418006\n', { mode: 0o700 });
+  writeFileSync(join(directory, 'gh'), '#!/bin/sh\nprintf "%s\\n" qtaghdi:135234546\n', { mode: 0o700 });
   writeFileSync(join(directory, 'askpass'), '#!/bin/sh\n: > "$ASKPASS_MARKER"\n', { mode: 0o700 });
   writeFileSync(join(directory, 'git'), [
     '#!/bin/sh',
@@ -32,7 +32,7 @@ test('Only the internal Git helper can supply credentials for the assigned HTTPS
     '  shift 2',
     'done',
     '[ "$*" = "push origin HEAD" ] && [ -n "${helper_option:-}" ] || exit 2',
-    'printf "protocol=https\\nhost=github.com\\nusername=arvynoo\\n\\n" |',
+    'printf "protocol=https\\nhost=github.com\\nusername=qtaghdi\\n\\n" |',
     '  "$REAL_GIT" -c credential.helper= -c "$helper_option" credential fill > "$CREDENTIAL_PROTOCOL"',
     '',
   ].join('\n'), { mode: 0o700 });
@@ -360,8 +360,8 @@ test('Git commits set both identities and reject forms that reuse authorship', t
   assert.equal(commit.status, 0, commit.stderr);
   assert.equal(existsSync(hookMarker), true);
   assert.equal(gitCommand('show', '-s', '--format=%an <%ae>|%cn <%ce>'), [
-    'arvynoo <264418006+arvynoo@users.noreply.github.com>',
-    'arvynoo <264418006+arvynoo@users.noreply.github.com>',
+    'qtaghdi <135234546+qtaghdi@users.noreply.github.com>',
+    'qtaghdi <135234546+qtaghdi@users.noreply.github.com>',
   ].join('|'));
 });
 
@@ -379,7 +379,7 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     '#!/bin/sh',
     'printf "%s\\n" "$*" >> "$KEYCHAIN_QUERIES"',
     'case "$*" in',
-    '  "lookup service gh:github.com username arvynoo") printf "%s\\n" fixture_ai_token ;;',
+    '  "lookup service gh:github.com username arvynoo") printf "%s\\n" fixture_test_token ;;',
     '  "lookup service gh:github.com username qtaghdi") printf "%s\\n" fixture_owner_token ;;',
     '  *) exit 2 ;;',
     'esac',
@@ -388,11 +388,11 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
   writeFileSync(join(directory, 'gh'), [
     '#!/bin/sh',
     ': > "$GH_MARKER"',
-    '[ "$GH_TOKEN" = fixture_ai_token ] && [ -z "${GH_DEBUG+x}" ] || exit 3',
+    '[ "$GH_TOKEN" = fixture_owner_token ] && [ -z "${GH_DEBUG+x}" ] || exit 3',
     'case "$1 $2" in',
     '  "api user")',
     '    [ "$3 $4 $5" = "--hostname github.com --jq" ] || exit 4',
-    '    printf "%s\\n" arvynoo:264418006 ;;',
+    '    printf "%s\\n" qtaghdi:135234546 ;;',
     '  "issue create"|"pr create")',
     '    [ "$GH_PROMPT_DISABLED" = 1 ] || "$GH_EDITOR"',
     '    [ "$GH_PROMPT_DISABLED" = 1 ] && [ "$GH_PAGER" = cat ] &&',
@@ -441,7 +441,7 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
   const identity = launch('api', 'user', '--jq', '.login');
   assert.ifError(identity.error);
   assert.equal(identity.status, 0, identity.stderr);
-  assert.equal(identity.stdout.trim(), 'arvynoo');
+  assert.equal(identity.stdout.trim(), 'qtaghdi');
 
   for (const arguments_ of [
     ['issue', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture', '--body', 'details'],
@@ -454,6 +454,6 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
   }
   assert.equal(existsSync(editorMarker), false);
   assert.deepEqual(readFileSync(keychain, 'utf8').trim().split('\n'), Array(3).fill(
-    'lookup service gh:github.com username arvynoo',
+    'lookup service gh:github.com username qtaghdi',
   ));
 });
