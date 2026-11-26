@@ -35,3 +35,26 @@ test('Git credential lookup fails without invoking an alternate askpass provider
   assert.equal(existsSync(marker), false);
   assert.equal(result.stdout, '');
 });
+
+test('Git push refuses configured HTTP headers without printing their values', () => {
+  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
+  const authorization = 'Authorization: Basic fixture';
+  const result = spawnSync(launcher, ['git', 'push', '--dry-run', 'https://github.com/Oddmash/fixture.git'], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      GIT_CONFIG_GLOBAL: '/dev/null',
+      GIT_CONFIG_NOSYSTEM: '1',
+      GIT_CONFIG_COUNT: '1',
+      GIT_CONFIG_KEY_0: 'http.https://github.com/Oddmash/.extraHeader',
+      GIT_CONFIG_VALUE_0: authorization,
+      GIT_ALLOW_PROTOCOL: 'file',
+    },
+  });
+
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /no Git HTTP extra headers/);
+  assert.equal(result.stderr.includes(authorization), false);
+  assert.equal(result.stdout, '');
+});

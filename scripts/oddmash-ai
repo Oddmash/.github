@@ -21,6 +21,20 @@ case "${1:-}" in
     ;;
   git)
     shift
+    case "${1:-}" in
+      -*)
+        printf '%s\n' 'Run oddmash-ai from the checkout and pass the Git subcommand directly.' >&2
+        exit 2
+        ;;
+      clone|fetch|ls-remote|pull|push)
+        status=0
+        git config --name-only --get-regexp '^http(\..*)?\.extraheader$' >/dev/null 2>&1 || status=$?
+        if [ "$status" -ne 1 ]; then
+          printf '%s\n' 'Use a checkout with no Git HTTP extra headers for authenticated operations.' >&2
+          exit 1
+        fi
+        ;;
+    esac
     export GIT_AUTHOR_NAME=arvynoo GIT_COMMITTER_NAME=arvynoo
     export GIT_AUTHOR_EMAIL=264418006+arvynoo@users.noreply.github.com
     export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"

@@ -6,14 +6,14 @@
 | `arvynoo` | AI development and operations account. Uses the organization Member role and per-repository Write access where same-repository development is needed. Uses topic branches for commits and opens issues and pull requests. |
 | `oddmash-lead[bot]` | Current identity of the Oddmash Reviewer GitHub App. Reviews and verifies pull requests. Its separate merge module follows the existing [Phase 4 gates](AI-CODE-REVIEW.md#phase-4-maintainer-only-auto-merge). |
 
-Use each account for its assigned work. For `arvynoo`, keep Admin, Maintain, branch-rule bypass, and release or deployment authority out of its role assignments. Keep organization base access at Read or below. Grant repository access explicitly and verify it using the account's effective GitHub permissions. Owner commands and approval of the issue acceptance criteria used by automatic merging stay with `qtaghdi`.
+Use each account for its assigned work. Grant `arvynoo` the organization Member role and keep Admin, Maintain, and branch-rule bypass out of its repository assignments. Reserve release and deployment authorization for `qtaghdi`. GitHub’s built-in Write role still permits creating and editing GitHub Releases. Verify an owner-only production gate where Write is granted, such as Oddmash Agents’ deployment workflow that checks the owner’s GitHub ID. Use Read and fork-based development wherever GitHub Release mutations themselves must be technically restricted. Keep organization base access at Read or below. Grant repository access explicitly and verify it using the account's effective GitHub permissions. Owner commands and approval of the issue acceptance criteria used by automatic merging stay with `qtaghdi`.
 
 ## Run an AI development session
 
-1. Obtain `scripts/oddmash-ai` from a reviewed revision of this repository. Use its absolute path in each session.
+1. Obtain [the launcher](../scripts/oddmash-ai) from a reviewed revision of this repository. Use its absolute path in each session.
 2. Run `oddmash-ai gh api user --jq .login` and confirm it returns `arvynoo`. The launcher reads the corresponding existing GitHub CLI credential from the keychain for each command.
 3. Use a separate checkout or worktree and focused branch for each session. Check the remote owner, base branch, active claims and changed paths. Identify the session and planned branch in the claim, even if another AI session uses the same account.
-4. Use `oddmash-ai git commit` and `oddmash-ai git push` for your branch. Use an HTTPS GitHub remote and verify the destination before pushing. Use `oddmash-ai gh issue create`, `oddmash-ai gh pr create`, or the corresponding API calls for GitHub writes. Check the published commit author and committer and the issue and PR authors.
+4. Use `oddmash-ai git commit` and `oddmash-ai git push` for your branch. Run from the checkout with an HTTPS GitHub remote that has no embedded credentials or Git HTTP extra headers. Verify the destination before pushing. Use `oddmash-ai gh issue create`, `oddmash-ai gh pr create`, or the corresponding API calls for GitHub writes. Check the published commit author and committer and the issue and PR authors.
 5. Leave tokens in the keychain and command environment. Keep them out of logs, shell tracing, files, Git configuration and remote URLs. Use the launcher per command so other sessions can keep their own account and configuration.
 
 ## Set up an Oddmash repository
