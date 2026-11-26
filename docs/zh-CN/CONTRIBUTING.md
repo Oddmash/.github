@@ -44,6 +44,14 @@ JavaScript/TypeScript 仓库内部使用 `package.json` 中固定的统一 pnpm 
 - 按照项目的 `CONTRIBUTING.md` 配置环境并运行检查，在拉取请求中记录结果。
 - 说明权限、采集数据、公开 API、部署或发布行为的变化。
 
+## 合并拉取请求
+
+Oddmash 的公开仓库仅允许使用 GitHub 的 **Create a merge commit** 选项合并拉取请求。仓库设置已禁用压缩合并和变基合并。此政策适用于手动合并和自动合并。
+
+### 设置新的公开仓库
+
+在 Oddmash 下创建公开仓库后，立即打开 **Settings → General → Pull Requests**。启用 **Allow merge commits**，然后关闭 **Allow squash merging** 和 **Allow rebase merging**。在接受拉取请求前，重新加载设置页面，确认仅启用了 **Allow merge commits**。
+
 ## 贡献格式检查
 
 - 填写[共用 PR 模板](../../PULL_REQUEST_TEMPLATE.md)的所有必填部分，并为标题和维护者主题分支的提交标题添加类型前缀，例如 `fix: clarify focus`。不重写外部贡献者的提交和现有发布合并历史。
