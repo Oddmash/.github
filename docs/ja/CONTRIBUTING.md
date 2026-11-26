@@ -44,6 +44,14 @@ JavaScript/TypeScript リポジトリ内部では、`package.json` に固定し�
 - プロジェクトの `CONTRIBUTING.md` に従って環境を準備し、チェックを実行してください。結果はプルリクエストに記載してください。
 - 権限、収集データ、公開 API、デプロイ、リリース動作の変更点を説明してください。
 
+## プルリクエストをマージする
+
+Oddmash の公開リポジトリでは、プルリクエストのマージに GitHub の **Create a merge commit** のみを使用できます。スカッシュマージとリベースマージはリポジトリ設定で無効になっています。この方針は手動マージと自動マージの両方に適用されます。
+
+### 新しい公開リポジトリを設定する
+
+Oddmash に公開リポジトリを作成した直後に、**Settings → General → Pull Requests** を開きます。**Allow merge commits** を有効にし、**Allow squash merging** と **Allow rebase merging** を無効にします。プルリクエストを受け付ける前に設定ページを再読み込みし、**Allow merge commits** のみが有効になっていることを確認します。
+
 ## 貢献形式の検証
 
 - [共通 PR テンプレート](../../PULL_REQUEST_TEMPLATE.md)の必須項目をすべて記入し、タイトルとメンテナーのトピックブランチのコミット件名に `fix: clarify focus` のような種類の接頭辞を付けます。外部コントリビューターや既存のリリースマージ履歴は書き換えません。
