@@ -63,7 +63,7 @@ Use this file as the baseline for new Oddmash repositories. Every product reposi
 
 ## GitHub account use
 
-- Follow the [GitHub account policy](docs/github-account-policy.md). Use `arvynoo` for AI-authored commits, pushes, issues, and pull requests through the command-scoped launcher. Use a separate checkout or worktree and a distinct claim for each session.
+- Follow the [GitHub account policy](docs/github-account-policy.md). Use `arvynoo` for AI-authored commits, pushes, issues, and pull requests with command-scoped authentication. Use a separate checkout or worktree and a distinct claim for each session.
 - `qtaghdi` owns organization settings, release authorization, and the existing maintainer commands. On external PRs, `qtaghdi` gives final approval on the current head and performs the manual merge after the required checks. The Lead app reports findings and requests maintainer approval when its review is complete.
 
 ## Concurrent work claims

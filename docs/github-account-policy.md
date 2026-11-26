@@ -10,13 +10,9 @@ Use each account for its assigned work. Grant `arvynoo` the organization Member 
 
 ## Run an AI development session
 
-1. Obtain [the launcher](../scripts/oddmash-ai) from a reviewed revision of this repository. Use its absolute path in each session.
-2. Run `oddmash-ai gh api user --jq .login` and confirm it returns `arvynoo`. The launcher reads the corresponding existing GitHub CLI credential from the keychain for each command.
-3. Use a separate checkout or worktree and focused branch for each session. Check the remote owner, base branch, active claims and changed paths. Identify the session and planned branch in the claim, even if another AI session uses the same account.
-4. Use `oddmash-ai git commit` and `oddmash-ai git push` for your branch. Run from the checkout with an HTTPS GitHub remote that has no embedded credentials or Git HTTP extra headers. Verify the destination before pushing. Use `oddmash-ai gh issue create`, `oddmash-ai gh pr create`, or the corresponding API calls for GitHub writes. Check the published commit author and committer and the issue and PR authors.
-5. Leave tokens in the keychain and command environment. Keep them out of logs, shell tracing, files, Git configuration and remote URLs. Use the launcher per command so other sessions can keep their own account and configuration.
-
-Run the launcher with the Git subcommand first from the checkout. For example, use `oddmash-ai git commit -m "docs: update the guide"` followed by `oddmash-ai git push origin HEAD` on your claimed topic branch. If the launcher reports an unavailable keychain credential, Git HTTP headers, or a netrc configuration, correct the session’s credential configuration before retrying.
+1. Use an existing keychain-backed `arvynoo` credential scoped to the GitHub command. Verify the authenticated login with `gh api user --jq .login` using the same credential selection. Preserve the global GitHub CLI account and keep credentials out of files, Git settings, remote URLs, and trace output.
+2. Use a separate checkout or worktree and topic branch. Verify the repository, branch, existing claims, and changed paths. Record the session and branch in the claim, since multiple sessions may use the same account.
+3. Set the commit author and committer to `arvynoo <264418006+arvynoo@users.noreply.github.com>` for AI changes. Use a credential-free GitHub HTTPS destination, confirm its effective push URL, and verify Git is using the assigned account. Use the same account when creating issues or pull requests, and verify the resulting GitHub authorship.
 
 ## Set up an Oddmash repository
 
