@@ -1,6 +1,6 @@
 # Release notes
 
-Apply this baseline to every Oddmash GitHub Release. Keep each product's required release sections, version rules, artifact checks and publication authorization. Do not rewrite historical releases or publish a new release solely to apply this format.
+Apply this baseline to every Oddmash GitHub Release. Keep each product's required release sections, version rules, artifact checks and publication authorization. Do not rewrite historical tags or republish artifacts solely to apply this format. Correct verified attribution omissions in existing release descriptions in place when authorized, preserving all other content.
 
 ## Content and ordering
 
@@ -19,6 +19,17 @@ GitHub automatically renders its native Contributors section with profile avatar
 - Use PR links or plain display names without @mentions elsewhere, including in generated notes, so internal or unrelated users do not appear in native Contributors.
 - If no external contributor is verified, omit the acknowledgment entirely. Do not add placeholder accounts or a "None" section.
 - After authorized publication or an authorized edit, verify on the GitHub release page that the Contributors heading and avatars match the intended external contributors. Do not claim verification before observing the published page.
+
+## Release attribution checklist
+
+Use this checklist for every public project, including documentation-only and patch releases.
+
+- Resolve the previous published tag in the same release channel and the exact candidate revision (or actual published tag for an audit). Compare their ancestry, not PR creation dates, merge dates alone, or the current tip of develop.
+- Inspect the complete commit range and included PRs, following pagination until all results are accounted for. For promotion PRs, inspect the constituent changes and original PR authors, including nested merges. Confirm cherry-picked or otherwise non-merge contributions against the actual released diff.
+- Record each verified external contributor's GitHub login, included PR or commit, and concrete contribution in the release preparation evidence. Exclude bots, maintainer-only work, and PRs that are merged only into develop or otherwise absent from the released range.
+- Reconcile that evidence with the release body before publishing. Include all verified external humans in the final acknowledgment; retain the relevant change and PR reference in the appropriate section. Recheck whenever the release candidate changes.
+- After publishing, compare the final tag range and published body against the same evidence, then inspect the native Contributors section on GitHub. If an omission is confirmed, obtain authorization for an in-place release-description correction; do not create a new tag or republish a package for attribution alone.
+- If no external contributors are present, record that the release range was checked and omit the acknowledgment from the public release body. If evidence is incomplete, report the attribution check as pending rather than claiming completion.
 
 ## Copyable baseline
 
