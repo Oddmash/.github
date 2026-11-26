@@ -3,30 +3,36 @@
 set +x
 set -eu
 
-case "${1:-}" in
-  gh|git) command_name=$1; shift ;;
-  *) printf '%s\n' 'Usage: oddmash-ai gh|git <arguments>' >&2; exit 2 ;;
-esac
-
 export GH_HOST=github.com
 unset GH_TOKEN GITHUB_TOKEN
-if [ "$(gh auth status --hostname github.com --json hosts --jq '
-  .hosts["github.com"][] | select(.login == "arvynoo" and .state == "success") | .tokenSource
-')" != keyring ]; then
-  printf '%s\n' 'An active arvynoo credential in the system keychain is required.' >&2
-  exit 1
-fi
-GH_TOKEN=$(gh auth token --hostname github.com --user arvynoo)
-export GH_TOKEN
-case "$command_name" in
-  gh) exec gh "$@" ;;
+
+case "${1:-}" in
+  gh)
+    shift
+    if [ "$(gh auth status --hostname github.com --json hosts --jq '
+      .hosts["github.com"][] | select(.login == "arvynoo" and .state == "success") | .tokenSource
+    ')" != keyring ]; then
+      printf '%s\n' 'Use the arvynoo credential in the system keychain.' >&2
+      exit 1
+    fi
+    GH_TOKEN=$(gh auth token --hostname github.com --user arvynoo)
+    export GH_TOKEN
+    exec gh "$@"
+    ;;
   git)
+    shift
     export GIT_AUTHOR_NAME=arvynoo GIT_COMMITTER_NAME=arvynoo
     export GIT_AUTHOR_EMAIL=264418006+arvynoo@users.noreply.github.com
     export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
     export GIT_TERMINAL_PROMPT=0
+    ODDMASH_AI_LAUNCHER="$(cd "$(dirname "$0")" && pwd -P)/$(basename "$0")"
+    export ODDMASH_AI_LAUNCHER
     exec git -c credential.helper= \
-      -c 'credential.https://github.com.helper=!gh auth git-credential' \
+      -c 'credential.https://github.com.helper=!f() { [ "$1" = get ] || return 0; "$ODDMASH_AI_LAUNCHER" gh auth git-credential "$@"; }; f' \
       -c credential.https://github.com.username=arvynoo "$@"
+    ;;
+  *)
+    printf '%s\n' 'Usage: oddmash-ai gh|git <arguments>' >&2
+    exit 2
     ;;
 esac
