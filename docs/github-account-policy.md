@@ -16,7 +16,7 @@ Use each account for its assigned work. Grant `arvynoo` the organization Member 
 
 ### Use the command-scoped launcher
 
-Run [`oddmash-ai`](../scripts/oddmash-ai) from the checkout using its absolute path. Use `oddmash-ai gh api user --jq .login` to verify the account. Use `oddmash-ai git commit -m "docs: update guidance"` for commit attribution and `oddmash-ai git push origin HEAD` to push. The push requires a named remote with one credential-free effective GitHub HTTPS URL and an explicit refspec. HTTP redirects are disabled. Use the commit command for new commits. It rejects author overrides, amendments, and history operations that can reuse an existing author.
+Run [`oddmash-ai`](../scripts/oddmash-ai) from the checkout using its absolute path. Use `oddmash-ai gh api user --jq .login` to verify the account. Use `oddmash-ai git commit -m "docs: update guidance"` for commit attribution and `oddmash-ai git push origin HEAD` to push. The push requires a named remote with one credential-free effective GitHub HTTPS URL and an explicit refspec. The launcher disables HTTP redirects and rejects push settings that disable TLS certificate verification. Use the commit command for new commits. It rejects author overrides, amendments, and history operations that can reuse an existing author.
 
 For GitHub writes, put `--repo OWNER/REPO` immediately after `gh issue create` or `gh pr create`. Pass `--head` for an already pushed branch when creating a PR. For `gh api`, use a relative endpoint such as `repos/Oddmash/.github/issues` and supply option values as separate arguments. The launcher rejects alternate hosts and unsupported command forms before invoking GitHub CLI.
 

@@ -47,6 +47,7 @@ function gitRepository(t) {
     NETRC: '',
     HOME: directory,
   };
+  delete env.GIT_SSL_NO_VERIFY;
   const gitCommand = (...arguments_) => {
     const result = spawnSync('git', arguments_, { cwd: directory, env, encoding: 'utf8' });
     assert.ifError(result.error);
@@ -134,12 +135,56 @@ test('Git push rejects a rewritten transport and disables destination-specific r
   assert.equal(existsSync(marker), false);
 
   gitCommand('config', '--unset', 'url.ssh://git@github.com/.pushInsteadOf');
+  gitCommand('config', '--add', 'remote.origin.pushurl', destination);
+  gitCommand('config', '--add', 'remote.origin.pushurl', 'https://github.com/Oddmash/other.git');
+  result = launch();
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /one credential-free github.com HTTPS destination/);
+  assert.equal(existsSync(marker), false);
+  gitCommand('config', '--unset-all', 'remote.origin.pushurl');
+  gitCommand('config', 'remote.origin.pushurl', 'https://fixture@github.com/Oddmash/fixture.git');
+  result = launch();
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /credential-free github.com HTTPS/);
+  assert.equal(existsSync(marker), false);
+  gitCommand('config', '--unset', 'remote.origin.pushurl');
+
   gitCommand('config', `http.${destination}.followRedirects`, 'true');
   assert.equal(gitCommand('config', '--get-urlmatch', 'http.followRedirects', destination), 'true');
   result = launch();
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stderr);
   assert.equal(readFileSync(marker, 'utf8').trim(), 'false');
+});
+
+test('Git push refuses disabled TLS verification before authenticating', t => {
+  const { directory, env, gitCommand, destination } = gitRepository(t);
+  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
+  const marker = join(directory, 'auth-called');
+  writeFileSync(join(directory, 'gh'), '#!/bin/sh\n: > "$AUTH_MARKER"\nexit 2\n', { mode: 0o700 });
+  const launch = (overrides = {}) => spawnSync(launcher, ['git', 'push', 'origin', 'HEAD'], {
+    cwd: directory,
+    encoding: 'utf8',
+    env: {
+      ...env,
+      PATH: directory + delimiter + process.env.PATH,
+      AUTH_MARKER: marker,
+      ...overrides,
+    },
+  });
+  const assertRefused = result => {
+    assert.ifError(result.error);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /requires TLS certificate verification/);
+    assert.equal(existsSync(marker), false);
+  };
+
+  gitCommand('config', 'http.sslVerify', 'true');
+  assertRefused(launch({ GIT_SSL_NO_VERIFY: '1' }));
+  gitCommand('config', `http.${destination}.sslVerify`, 'false');
+  assertRefused(launch());
 });
 
 test('Git commits set both identities and reject forms that reuse authorship', t => {
@@ -221,6 +266,10 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     ['issue', 'create', '--repo', 'git.example.invalid/owner/repo', '--title', 'fixture'],
     ['api', 'repos/owner/repo/issues', '--hostname', 'git.example.invalid', '-X', 'POST'],
     ['api', 'https://git.example.invalid/repos/owner/repo/issues', '-X', 'POST'],
+    ['api', 'repos/owner/repo/issues', '--hostname=git.example.invalid', '-X', 'POST'],
+    ['issue', 'create', '--repo', 'Oddmash/fixture', '--repo', 'git.example.invalid/owner/repo'],
+    ['pr', 'create', '--repo', 'Oddmash/fixture', '--head', ''],
+    ['pr', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture'],
   ]) {
     const result = launch(...arguments_);
     assert.ifError(result.error);

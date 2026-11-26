@@ -4,7 +4,7 @@ set +x
 set -eu
 
 export GH_HOST=github.com LC_ALL=C
-unset GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN GH_REPO
+unset GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN GH_REPO GIT_CONFIG
 
 fail() {
   printf '%s\n' "$1" >&2
@@ -153,6 +153,13 @@ case "${1:-}" in
         shift
         check_push_remote "$@"
         set -- push "$@"
+        [ -z "${GIT_SSL_NO_VERIFY+x}" ] || fail 'Git push requires TLS certificate verification. Unset GIT_SSL_NO_VERIFY.'
+        status=0
+        tls_verify=$(git config --type=bool --get-urlmatch http.sslVerify "$push_url" 2>/dev/null) || status=$?
+        case "$status:$tls_verify" in
+          0:true|1:) ;;
+          *) fail 'Git push requires TLS certificate verification for the destination.' ;;
+        esac
         export GIT_ALLOW_PROTOCOL=https
         redirect_override="http.$push_url.followRedirects=false"
         redirects=$(git -c "$redirect_override" config --type=bool --get-urlmatch http.followRedirects "$push_url") ||
