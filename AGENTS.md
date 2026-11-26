@@ -4,6 +4,13 @@ Oddmash is a one-person independent software studio that builds web services, ga
 
 Use this file as the baseline for new Oddmash repositories. Every product repository should keep its own root `AGENTS.md` and add only the rules its product, runtime, privacy boundary, release process, UI, or visual identity requires.
 
+## Execution-first handling
+
+- Distinguish advice, review and planning requests from requests to create, implement, fix or continue. For authorized execution, start an observable scoped action in the same turn after the required preflight, issue and work-claim checks. Do not replace execution with a promise, repeated plan, or request to reconfirm unchanged scope.
+- Treat an explicit continuation as authorization to resume the previously agreed scope. Plan briefly when useful, then continue through available implementation and verification steps. If blocked, complete independent authorized work where possible and report the specific failed action or missing decision.
+- Ask for a decision only when required by permissions, a genuine blocker, an unresolved material product choice, destructive or consequential action, or a meaningful scope expansion. Never weaken contributor protections, security, review, CI, release or authorization gates to accelerate execution.
+- End with actual outcomes, evidence, links, and remaining work. Distinguish proposed, attempted, completed and verified states; never claim an action succeeded without supporting evidence.
+
 ## Product documentation
 
 - Write direct, natural prose in new product copy, documentation, and collaboration messages. Do not use em dashes (U+2014), en dashes (U+2013) as sentence punctuation, or decorative punctuation as a substitute for clear sentences. Prefer periods, commas, colons, or parentheses. Preserve required code, identifiers, quotations, and literal source content. Avoid generic slogans, inflated claims, repeated rhetorical headlines, and filler.
