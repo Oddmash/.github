@@ -16,6 +16,8 @@ Use each account for its assigned work. Grant `arvynoo` the organization Member 
 4. Use `oddmash-ai git commit` and `oddmash-ai git push` for your branch. Run from the checkout with an HTTPS GitHub remote that has no embedded credentials or Git HTTP extra headers. Verify the destination before pushing. Use `oddmash-ai gh issue create`, `oddmash-ai gh pr create`, or the corresponding API calls for GitHub writes. Check the published commit author and committer and the issue and PR authors.
 5. Leave tokens in the keychain and command environment. Keep them out of logs, shell tracing, files, Git configuration and remote URLs. Use the launcher per command so other sessions can keep their own account and configuration.
 
+Run the launcher with the Git subcommand first from the checkout. For example, use `oddmash-ai git commit -m "docs: update the guide"` followed by `oddmash-ai git push origin HEAD` on your claimed topic branch. If the launcher reports an unavailable keychain credential, Git HTTP headers, or a netrc configuration, correct the session’s credential configuration before retrying.
+
 ## Set up an Oddmash repository
 
 On GitHub Free, apply these steps per repository. Organization-wide repository rulesets and branch protection for private organization repositories require a plan that supports those features.
@@ -27,3 +29,5 @@ On GitHub Free, apply these steps per repository. Organization-wide repository r
 5. Verify the review installation and exact repository eligibility before using conditional automatic merge. Public review coverage follows the organization installation. Private review and automatic merge use separate, explicitly approved enrollment. Keep manual review when a required protection is unavailable.
 
 Check these steps during repository creation and after changing visibility, access, branch rules, or review-app enrollment.
+
+Changes to this account policy and other governance documents require manual review and merge.

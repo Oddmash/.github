@@ -38,7 +38,7 @@ test('Git credential lookup fails without invoking an alternate askpass provider
 
 test('Git push refuses configured HTTP headers without printing their values', () => {
   const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
-  const authorization = 'Authorization: Basic fixture';
+  const header = 'X-Oddmash-Test: fixture';
   const result = spawnSync(launcher, ['git', 'push', '--dry-run', 'https://github.com/Oddmash/fixture.git'], {
     encoding: 'utf8',
     env: {
@@ -47,7 +47,7 @@ test('Git push refuses configured HTTP headers without printing their values', (
       GIT_CONFIG_NOSYSTEM: '1',
       GIT_CONFIG_COUNT: '1',
       GIT_CONFIG_KEY_0: 'http.https://github.com/Oddmash/.extraHeader',
-      GIT_CONFIG_VALUE_0: authorization,
+      GIT_CONFIG_VALUE_0: header,
       GIT_ALLOW_PROTOCOL: 'file',
     },
   });
@@ -55,6 +55,19 @@ test('Git push refuses configured HTTP headers without printing their values', (
   assert.ifError(result.error);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /no Git HTTP extra headers/);
-  assert.equal(result.stderr.includes(authorization), false);
+  assert.equal(result.stderr.includes(header), false);
+  assert.equal(result.stdout, '');
+});
+
+test('Git push refuses an inherited netrc file before accessing the remote', () => {
+  const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
+  const result = spawnSync(launcher, ['git', 'push', '--dry-run', 'https://github.com/Oddmash/fixture.git'], {
+    encoding: 'utf8',
+    env: { ...process.env, NETRC: '/dev/null', GIT_ALLOW_PROTOCOL: 'file' },
+  });
+
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /without netrc credentials/);
   assert.equal(result.stdout, '');
 });

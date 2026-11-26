@@ -27,6 +27,10 @@ case "${1:-}" in
         exit 2
         ;;
       clone|fetch|ls-remote|pull|push)
+        if [ -z "${HOME:-}" ] || [ -n "${NETRC:-}" ] || [ -e "$HOME/.netrc" ] || [ -L "$HOME/.netrc" ]; then
+          printf '%s\n' 'Use a session without netrc credentials for authenticated Git operations.' >&2
+          exit 1
+        fi
         status=0
         git config --name-only --get-regexp '^http(\..*)?\.extraheader$' >/dev/null 2>&1 || status=$?
         if [ "$status" -ne 1 ]; then
