@@ -14,6 +14,14 @@ Use each account for its assigned work. Grant `arvynoo` the organization Member 
 2. Use a separate checkout or worktree and topic branch. Verify the repository, branch, existing claims, and changed paths. Record the session and branch in the claim, since multiple sessions may use the same account.
 3. Set the commit author and committer to `arvynoo <264418006+arvynoo@users.noreply.github.com>` for AI changes. Use a credential-free GitHub HTTPS destination, confirm its effective push URL, and verify Git is using the assigned account. Use the same account when creating issues or pull requests, and verify the resulting GitHub authorship.
 
+### Use the command-scoped launcher
+
+Run [`oddmash-ai`](../scripts/oddmash-ai) from the checkout using its absolute path. Use `oddmash-ai gh api user --jq .login` to verify the account. Use `oddmash-ai git commit -m "docs: update guidance"` for commit attribution and `oddmash-ai git push origin HEAD` to push. The push requires a named remote with one credential-free effective GitHub HTTPS URL and an explicit refspec.
+
+For GitHub writes, put `--repo OWNER/REPO` immediately after `gh issue create` or `gh pr create`. Pass `--head` for an already pushed branch when creating a PR. For `gh api`, use a relative endpoint such as `repos/Oddmash/.github/issues` and supply option values as separate arguments. The launcher rejects alternate hosts and unsupported command forms before invoking GitHub CLI.
+
+If the launcher reports an unavailable keychain credential, an unexpected push destination, Git HTTP extra headers, or netrc credentials, verify the assigned account and the checkout configuration before retrying.
+
 ## Set up an Oddmash repository
 
 On GitHub Free, apply these steps per repository. Organization-wide repository rulesets and branch protection for private organization repositories require a plan that supports those features.

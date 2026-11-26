@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
           persist-credentials: false
-      - run: node --test scripts/pr-format.test.mjs
+      - run: node --test scripts/pr-format.test.mjs scripts/oddmash-ai.test.mjs
   verify:
     needs: [scope, format-tests]
     if: always()

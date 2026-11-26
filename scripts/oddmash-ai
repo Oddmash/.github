@@ -1,0 +1,156 @@
+#!/bin/sh
+# Run supported GitHub CLI and Git commands as the Oddmash AI account.
+set +x
+set -eu
+
+export GH_HOST=github.com LC_ALL=C
+unset GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN GH_REPO
+
+fail() {
+  printf '%s\n' "$1" >&2
+  exit 1
+}
+
+load_github_credential() {
+  if [ "$(gh auth status --hostname github.com --json hosts --jq '
+    .hosts["github.com"][] | select(.login == "arvynoo" and .state == "success") | .tokenSource
+  ')" != keyring ]; then
+    fail 'Use the arvynoo credential in the system keychain.'
+  fi
+  GH_TOKEN=$(gh auth token --hostname github.com --user arvynoo)
+  [ -n "$GH_TOKEN" ] || fail 'The arvynoo credential is empty.'
+  export GH_TOKEN
+}
+
+check_repository_path() {
+  case "$1" in
+    *[!a-zA-Z0-9_./-]*|*/*/*) return 1 ;;
+  esac
+  printf '%s\n' "$1" | grep -Eq '^[a-zA-Z0-9][a-zA-Z0-9-]*/[a-zA-Z0-9_.-]+$'
+}
+
+check_gh_options() {
+  gh_subcommand=$1
+  shift
+  explicit_head=false
+  while [ "$#" -gt 0 ]; do
+    case "$gh_subcommand:$1" in
+      api:--include|api:--silent|pr:--draft|pr:--no-maintainer-edit) shift; continue ;;
+      pr:-H|pr:--head)
+        case "${2:-}" in
+          ''|-*) fail 'Provide an explicit pull request head branch.' ;;
+        esac
+        explicit_head=true
+        ;;
+      api:-X|api:--method|api:-F|api:--field|api:-f|api:--raw-field|api:--input|api:-q|api:--jq) ;;
+      issue:-t|issue:--title|issue:-b|issue:--body|issue:-F|issue:--body-file|issue:-l|issue:--label|issue:-a|issue:--assignee) ;;
+      pr:-t|pr:--title|pr:-b|pr:--body|pr:-F|pr:--body-file|pr:-B|pr:--base|pr:-l|pr:--label|pr:-a|pr:--assignee|pr:-r|pr:--reviewer) ;;
+      *) fail 'Unsupported GitHub CLI option. Use the documented options with separate values.' ;;
+    esac
+    [ "$#" -ge 2 ] || fail 'A GitHub CLI option is missing its value.'
+    shift 2
+  done
+  if [ "$gh_subcommand" = pr ] && [ "$explicit_head" = false ]; then
+    fail 'Push the branch separately and provide --head when creating a PR.'
+  fi
+}
+
+check_push_remote() {
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --dry-run|-u|--set-upstream) shift ;;
+      *) break ;;
+    esac
+  done
+  [ "$#" -ge 2 ] || fail 'Provide a named Git remote and an explicit refspec.'
+  push_remote=$1
+  shift
+  case "$push_remote" in
+    -*|*[!a-zA-Z0-9._-]*) fail 'Provide a named Git remote.' ;;
+  esac
+  for refspec do
+    case "$refspec" in
+      -*|'') fail 'Put supported Git push options before the remote.' ;;
+    esac
+  done
+  push_url=$(git remote get-url --push --all -- "$push_remote" 2>/dev/null) ||
+    fail 'Cannot determine the effective Git push destination.'
+  case "$push_url" in
+    https://github.com/*) ;;
+    *) fail 'Git push requires credential-free github.com HTTPS.' ;;
+  esac
+  check_repository_path "${push_url#https://github.com/}" ||
+    fail 'Git push requires one credential-free github.com HTTPS destination.'
+}
+
+case "${1:-}" in
+  gh)
+    shift
+    case "${1:-}" in
+      api)
+        [ "$#" -ge 2 ] || fail 'Provide a relative GitHub API endpoint.'
+        case "$2" in
+          *[!a-zA-Z0-9_./-]*|/*|*..*) fail 'Provide a relative GitHub API endpoint.' ;;
+          user|repos/*) ;;
+          *) fail 'Use the user or repos GitHub API endpoints.' ;;
+        esac
+        endpoint=$2
+        shift 2
+        check_gh_options api "$@"
+        load_github_credential
+        exec gh api "$endpoint" --hostname github.com "$@"
+        ;;
+      issue|pr)
+        [ "$#" -ge 4 ] && [ "$2" = create ] && [ "$3" = --repo ] ||
+          fail 'Use issue create or pr create with --repo OWNER/REPO first.'
+        kind=$1 repository=$4
+        check_repository_path "$repository" || fail 'Use --repo OWNER/REPO on github.com.'
+        shift 4
+        check_gh_options "$kind" "$@"
+        load_github_credential
+        exec gh "$kind" create --repo "github.com/$repository" "$@"
+        ;;
+      *) fail 'Use the GitHub API or create an issue or pull request.' ;;
+    esac
+    ;;
+  credential)
+    [ "$#" -eq 2 ] && [ "$2" = get ] || exit 0
+    load_github_credential
+    printf 'protocol=https\nhost=github.com\nusername=arvynoo\n\n' | gh auth git-credential get
+    ;;
+  git)
+    shift
+    case "${1:-}" in
+      push)
+        if [ -z "${HOME:-}" ] || [ -n "${NETRC:-}" ] ||
+          [ -e "$HOME/.netrc" ] || [ -L "$HOME/.netrc" ] ||
+          [ -e "$HOME/_netrc" ] || [ -L "$HOME/_netrc" ]; then
+          fail 'Use a session without netrc credentials for authenticated Git operations.'
+        fi
+        status=0
+        git config --name-only --get-regexp '^http(\..*)?\.extraheader$' >/dev/null 2>&1 || status=$?
+        [ "$status" -eq 1 ] || fail 'Use a checkout with no Git HTTP extra headers for authenticated operations.'
+        shift
+        check_push_remote "$@"
+        set -- push "$@"
+        export GIT_ALLOW_PROTOCOL=https
+        ;;
+      commit) ;;
+      credential)
+        [ "$#" -eq 2 ] && [ "$2" = fill ] || fail 'Unsupported Git credential operation.'
+        ;;
+      *) fail 'Use an explicit Git push or commit command.' ;;
+    esac
+    export GIT_AUTHOR_NAME=arvynoo GIT_COMMITTER_NAME=arvynoo
+    export GIT_AUTHOR_EMAIL=264418006+arvynoo@users.noreply.github.com
+    export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+    export GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=false
+    ODDMASH_AI_LAUNCHER="$(cd "$(dirname "$0")" && pwd -P)/$(basename "$0")"
+    export ODDMASH_AI_LAUNCHER
+    exec git -c credential.helper= \
+      -c 'credential.https://github.com.helper=!f() { [ "$1" = get ] || return 0; "$ODDMASH_AI_LAUNCHER" credential get; }; f' \
+      -c credential.https://github.com.username=arvynoo \
+      -c http.followRedirects=false -c push.recurseSubmodules=no "$@"
+    ;;
+  *) printf '%s\n' 'Usage: oddmash-ai gh|git <arguments>' >&2; exit 2 ;;
+esac
