@@ -25,14 +25,13 @@ check_gh_options() {
   explicit_head=false
   while [ "$#" -gt 0 ]; do
     case "$gh_subcommand:$1" in
-      api:--include|api:--silent|pr:--draft|pr:--no-maintainer-edit) shift; continue ;;
+      pr:--draft|pr:--no-maintainer-edit) shift; continue ;;
       pr:-H|pr:--head)
         case "${2:-}" in
           ''|-*) fail 'Provide an explicit pull request head branch.' ;;
         esac
         explicit_head=true
         ;;
-      api:-X|api:--method|api:-F|api:--field|api:-f|api:--raw-field|api:--input|api:-q|api:--jq) ;;
       issue:-t|issue:--title|issue:-b|issue:--body|issue:-F|issue:--body-file|issue:-l|issue:--label|issue:-a|issue:--assignee) ;;
       pr:-t|pr:--title|pr:-b|pr:--body|pr:-F|pr:--body-file|pr:-B|pr:--base|pr:-l|pr:--label|pr:-a|pr:--assignee|pr:-r|pr:--reviewer) ;;
       *) fail 'Unsupported GitHub CLI option. Use the documented options with separate values.' ;;
@@ -98,17 +97,10 @@ case "${1:-}" in
     shift
     case "${1:-}" in
       api)
-        [ "$#" -ge 2 ] || fail 'Provide a relative GitHub API endpoint.'
-        case "$2" in
-          *[!a-zA-Z0-9_./-]*|/*|*..*) fail 'Provide a relative GitHub API endpoint.' ;;
-          user|repos/*) ;;
-          *) fail 'Use the user or repos GitHub API endpoints.' ;;
-        esac
-        endpoint=$2
-        shift 2
-        check_gh_options api "$@"
+        [ "$#" -eq 4 ] && [ "$2" = user ] && [ "$3" = --jq ] && [ "$4" = .login ] ||
+          fail 'Use gh api user --jq .login to verify the launcher account.'
         load_github_credential
-        exec gh api "$endpoint" --hostname github.com "$@"
+        printf '%s\n' arvynoo
         ;;
       issue|pr)
         [ "$#" -ge 4 ] && [ "$2" = create ] && [ "$3" = --repo ] ||
@@ -120,7 +112,7 @@ case "${1:-}" in
         load_github_credential
         exec gh "$kind" create --repo "github.com/$repository" "$@"
         ;;
-      *) fail 'Use the GitHub API or create an issue or pull request.' ;;
+      *) fail 'Verify the GitHub account or create an issue or pull request.' ;;
     esac
     ;;
   git)

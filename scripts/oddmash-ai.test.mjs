@@ -311,9 +311,8 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     'case "$1 $2" in',
     '  "api user")',
     '    [ "$3 $4 $5" = "--hostname github.com --jq" ] || exit 4',
-    '    case "$6" in .login) printf "%s\\n" arvynoo ;; *) printf "%s\\n" arvynoo:264418006 ;; esac ;;',
+    '    printf "%s\\n" arvynoo:264418006 ;;',
     '  "issue create"|"pr create") test "$3 $4" = "--repo github.com/Oddmash/fixture" ;;',
-    '  "api repos/Oddmash/fixture/issues") test "$3 $4" = "--hostname github.com" ;;',
     '  *) exit 2 ;;',
     'esac',
     '',
@@ -335,6 +334,7 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     ['issue', 'create', '--repo', 'git.example.invalid/owner/repo', '--title', 'fixture'],
     ['api', 'repos/owner/repo/issues', '--hostname', 'git.example.invalid', '-X', 'POST'],
     ['api', 'https://git.example.invalid/repos/owner/repo/issues', '-X', 'POST'],
+    ['api', 'repos/Oddmash/fixture/actions/artifacts/1/zip'],
     ['api', 'repos/owner/repo/issues', '--hostname=git.example.invalid', '-X', 'POST'],
     ['issue', 'create', '--repo', 'Oddmash/fixture', '--repo', 'git.example.invalid/owner/repo'],
     ['pr', 'create', '--repo', 'Oddmash/fixture', '--head', ''],
@@ -355,14 +355,13 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
   for (const arguments_ of [
     ['issue', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture'],
     ['pr', 'create', '--repo', 'Oddmash/fixture', '--head', 'topic', '--title', 'fixture'],
-    ['api', 'repos/Oddmash/fixture/issues', '-X', 'POST', '-f', 'title=fixture'],
   ]) {
     const result = launch(...arguments_);
     assert.ifError(result.error);
     assert.equal(result.status, 0, result.stderr);
     assert.equal(existsSync(marker), true);
   }
-  assert.deepEqual(readFileSync(keychain, 'utf8').trim().split('\n'), Array(4).fill(
+  assert.deepEqual(readFileSync(keychain, 'utf8').trim().split('\n'), Array(3).fill(
     'lookup service gh:github.com username arvynoo',
   ));
 });
