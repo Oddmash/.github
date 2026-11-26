@@ -379,7 +379,7 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     '#!/bin/sh',
     'printf "%s\\n" "$*" >> "$KEYCHAIN_QUERIES"',
     'case "$*" in',
-    '  "lookup service gh:github.com username qtaghdi") printf "%s\\n" fixture_ai_token ;;',
+    '  "lookup service gh:github.com username arvynoo") printf "%s\\n" fixture_test_token ;;',
     '  "lookup service gh:github.com username qtaghdi") printf "%s\\n" fixture_owner_token ;;',
     '  *) exit 2 ;;',
     'esac',
@@ -388,7 +388,7 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
   writeFileSync(join(directory, 'gh'), [
     '#!/bin/sh',
     ': > "$GH_MARKER"',
-    '[ "$GH_TOKEN" = fixture_ai_token ] && [ -z "${GH_DEBUG+x}" ] || exit 3',
+    '[ "$GH_TOKEN" = fixture_owner_token ] && [ -z "${GH_DEBUG+x}" ] || exit 3',
     'case "$1 $2" in',
     '  "api user")',
     '    [ "$3 $4 $5" = "--hostname github.com --jq" ] || exit 4',
