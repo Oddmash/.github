@@ -20,7 +20,7 @@ Run [`oddmash-ai`](../scripts/oddmash-ai) from the checkout using its absolute p
 
 For GitHub writes, put `--repo OWNER/REPO` immediately after `gh issue create` or `gh pr create`. Pass `--head` for an already pushed branch when creating a PR. For `gh api`, use a relative endpoint such as `repos/Oddmash/.github/issues` and supply option values as separate arguments. The launcher rejects alternate hosts and unsupported command forms before invoking GitHub CLI.
 
-If the launcher reports an unavailable keychain credential, an unexpected push destination, Git HTTP extra headers, or netrc credentials, verify the assigned account and the checkout configuration before retrying.
+The launcher reads only the named GitHub CLI credential from macOS Keychain or Linux Secret Service through `secret-tool` and verifies its GitHub login and account ID. It disables authentication tracing in child commands. If the launcher reports an unavailable keychain credential, an unexpected push destination, Git HTTP extra headers, or netrc credentials, verify the assigned account and the checkout configuration before retrying.
 
 ## Set up an Oddmash repository
 

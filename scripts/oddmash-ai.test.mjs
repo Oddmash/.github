@@ -12,7 +12,8 @@ test('Git credential lookup fails without invoking an alternate askpass provider
   const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
   const askpass = join(fixture, 'askpass');
   const marker = join(fixture, 'askpass-used');
-  writeFileSync(join(fixture, 'gh'), '#!/bin/sh\n[ "$1 $2" = "auth status" ] || exit 1\nprintf "%s\\n" file\n', { mode: 0o700 });
+  writeFileSync(join(fixture, 'uname'), '#!/bin/sh\nprintf "%s\\n" Linux\n', { mode: 0o700 });
+  writeFileSync(join(fixture, 'secret-tool'), '#!/bin/sh\nexit 1\n', { mode: 0o700 });
   writeFileSync(askpass, '#!/bin/sh\n: > "$ASKPASS_MARKER"\nprintf "%s\\n" alternate\n', { mode: 0o700 });
 
   const result = spawnSync(launcher, ['git', 'credential', 'fill'], {
@@ -105,6 +106,8 @@ test('Git push rejects a rewritten transport and disables destination-specific r
     '#!/bin/sh',
     'case " $* " in *" config "*|*" remote "*) exec "$REAL_GIT" "$@" ;; esac',
     '[ "$GIT_ALLOW_PROTOCOL" = https ] || exit 2',
+    '[ "$GIT_TRACE_REDACT" = 1 ] || exit 5',
+    '[ -z "${GIT_TRACE_CURL+x}${GIT_CURL_VERBOSE+x}" ] || exit 6',
     'while [ "$1" = -c ]; do',
     '  case "$2" in http.*.followRedirects=false) redirect_setting=$2 ;; esac',
     '  shift 2',
@@ -123,6 +126,9 @@ test('Git push rejects a rewritten transport and disables destination-specific r
       REAL_GIT: gitPath,
       PUSH_MARKER: marker,
       PUSH_URL: destination,
+      GIT_TRACE_REDACT: '0',
+      GIT_TRACE_CURL: '1',
+      GIT_CURL_VERBOSE: '1',
     },
     encoding: 'utf8',
   });
@@ -239,12 +245,26 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
   t.after(() => rmSync(directory, { recursive: true }));
   const launcher = fileURLToPath(new URL('./oddmash-ai', import.meta.url));
   const marker = join(directory, 'gh-called');
+  const keychain = join(directory, 'keychain-queries');
+  writeFileSync(join(directory, 'uname'), '#!/bin/sh\nprintf "%s\\n" Linux\n', { mode: 0o700 });
+  writeFileSync(join(directory, 'secret-tool'), [
+    '#!/bin/sh',
+    'printf "%s\\n" "$*" >> "$KEYCHAIN_QUERIES"',
+    'case "$*" in',
+    '  "lookup service gh:github.com username arvynoo") printf "%s\\n" fixture_ai_token ;;',
+    '  "lookup service gh:github.com username qtaghdi") printf "%s\\n" fixture_owner_token ;;',
+    '  *) exit 2 ;;',
+    'esac',
+    '',
+  ].join('\n'), { mode: 0o700 });
   writeFileSync(join(directory, 'gh'), [
     '#!/bin/sh',
     ': > "$GH_MARKER"',
+    '[ "$GH_TOKEN" = fixture_ai_token ] && [ -z "${GH_DEBUG+x}" ] || exit 3',
     'case "$1 $2" in',
-    '  "auth status") printf "%s\\n" keyring ;;',
-    '  "auth token") printf "%s\\n" fixture-token ;;',
+    '  "api user")',
+    '    [ "$3 $4 $5" = "--hostname github.com --jq" ] || exit 4',
+    '    case "$6" in .login) printf "%s\\n" arvynoo ;; *) printf "%s\\n" arvynoo:264418006 ;; esac ;;',
     '  "issue create"|"pr create") test "$3 $4" = "--repo github.com/Oddmash/fixture" ;;',
     '  "api repos/Oddmash/fixture/issues") test "$3 $4" = "--hostname github.com" ;;',
     '  *) exit 2 ;;',
@@ -258,6 +278,8 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
       GH_HOST: 'git.example.invalid',
       PATH: directory + delimiter + process.env.PATH,
       GH_MARKER: marker,
+      KEYCHAIN_QUERIES: keychain,
+      GH_DEBUG: 'api',
     },
     encoding: 'utf8',
   });
@@ -275,7 +297,13 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     assert.ifError(result.error);
     assert.equal(result.status, 1, result.stderr);
     assert.equal(existsSync(marker), false);
+    assert.equal(existsSync(keychain), false);
   }
+
+  const identity = launch('api', 'user', '--jq', '.login');
+  assert.ifError(identity.error);
+  assert.equal(identity.status, 0, identity.stderr);
+  assert.equal(identity.stdout.trim(), 'arvynoo');
 
   for (const arguments_ of [
     ['issue', 'create', '--repo', 'Oddmash/fixture', '--title', 'fixture'],
@@ -287,4 +315,7 @@ test('GitHub CLI writes reject alternate hosts before invoking gh', t => {
     assert.equal(result.status, 0, result.stderr);
     assert.equal(existsSync(marker), true);
   }
+  assert.deepEqual(readFileSync(keychain, 'utf8').trim().split('\n'), Array(4).fill(
+    'lookup service gh:github.com username arvynoo',
+  ));
 });
