@@ -48,6 +48,10 @@ JavaScript/TypeScript 저장소 내부에서는 `package.json`에 고정한 공�
 
 Oddmash 공개 저장소에서는 GitHub의 **Create a merge commit** 방식으로만 풀 리퀘스트를 머지합니다. 저장소 설정에서 스쿼시 머지와 리베이스 머지를 비활성화합니다. 이 정책은 수동 및 자동 머지에 모두 적용됩니다.
 
+### 새 공개 저장소 설정
+
+Oddmash에 공개 저장소를 만든 직후 **Settings → General → Pull Requests**를 엽니다. **Allow merge commits**를 켜고 **Allow squash merging**과 **Allow rebase merging**을 끕니다. 풀 리퀘스트를 받기 전에 설정 페이지를 새로고침하여 **Allow merge commits**만 켜져 있는지 확인합니다.
+
 ## 기여 양식 검사
 
 - [공통 PR 양식](../../PULL_REQUEST_TEMPLATE.md)의 필수 항목을 모두 작성하고 제목과 유지관리자 작업 브랜치 커밋 제목에 `fix: clarify focus` 같은 유형 접두사를 사용하세요. 외부 기여자 커밋과 기존 릴리스 병합 이력은 수정하지 않습니다.
