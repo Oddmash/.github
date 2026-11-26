@@ -24,7 +24,7 @@ case "${1:-}" in
     export GIT_AUTHOR_NAME=arvynoo GIT_COMMITTER_NAME=arvynoo
     export GIT_AUTHOR_EMAIL=264418006+arvynoo@users.noreply.github.com
     export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
-    export GIT_TERMINAL_PROMPT=0
+    export GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=false
     ODDMASH_AI_LAUNCHER="$(cd "$(dirname "$0")" && pwd -P)/$(basename "$0")"
     export ODDMASH_AI_LAUNCHER
     exec git -c credential.helper= \
